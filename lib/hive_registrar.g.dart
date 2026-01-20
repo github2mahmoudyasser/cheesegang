@@ -4,15 +4,18 @@
 
 import 'package:hive_ce/hive_ce.dart';
 import 'package:cheesegang/features/home/data/models/product_model.dart';
+import 'package:cheesegang/features/product/data/details_model.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(DetailsModelAdapter());
     registerAdapter(ProductModelAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(DetailsModelAdapter());
     registerAdapter(ProductModelAdapter());
   }
 }

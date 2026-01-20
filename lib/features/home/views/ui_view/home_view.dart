@@ -241,7 +241,9 @@ class _HomeViewState extends State<HomeView> {
 
                                    return GestureDetector(
                                      onTap: (){
-                                       Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductDetailsView(productId: product.id,productPrice: product.price,)));
+                                       Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductDetailsView(
+                                         productId: product.id,
+                                         productPrice: product.price,)));
                                      },
                                      child: CardItem(
                                        //  i use product here because when data is load this variable will show fake data it help me stop crash when load data
