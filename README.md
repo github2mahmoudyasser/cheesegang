@@ -1,37 +1,44 @@
-   # cheesegang
+#  Cheesegang App
 
-   A new Flutter project.
+**Cheesegang: is a modern Food Delivery Application i built  it with Flutter, focusing on a smooth user experience and high performance.
 
-   ## my file structure
-   lib/
-   core/
-   constants/
-   api_endpoints.dart
-   app_colors.dart
-   app_strings.dart
+---
 
-   network/
-  api_service.dart
-  api_exception.dart
-  
-   utils/
-   helpers.dart
-   validators.dart
+##  Features
 
-   features/
-   food/
+* **Beautiful UI:** Clean and interactive burger delivery interface.
+* **State Management:** Powered by **Bloc/Cubit** for efficient and predictable state handling.
+* **Local Storage:** Uses **Hive** for fast local data caching 
+* **Network Layer:** Built with **Dio** and Clean API service architecture.
+* **3D Assets:** Support for 3D burger models (`.glb`).
 
-   data/
-   food_model.dart
-   food_repository.dart
+---
 
-   view/
-   food_list_view.dart
-   food-details_view.dart
+## 🛠️ Tech Stack & Architecture
 
-   widgets/
-   food_card.dart
-   
-   root.dart
-   main.dart/
+* **Framework:** [Flutter](https://flutter.dev)
+* **State Management:** [Flutter Bloc / Cubit](https://pub.dev/packages/flutter_bloc)
+* **Database:** [Hive](https://pub.dev/packages/hive)
+* **API Client:** [Dio](https://pub.dev/packages/dio)
+* **Navigation:** Custom App Navigator.
+* **Pattern:** Clean Architecture (Core, Features, Shared).
+
+---
+
+##  Project Structure Highlights
+* `lib/core`: Network, Navigation, Utilities, and Constants.
+* `lib/features`: Distinct modules like Auth, Home, Cart, and Product Details.
+* `lib/shared`: Reusable widgets used across the app.
+
+---
+
+## 📸 Screenshots
+* 
+
+---
+
+##  Author
+**Mahmoud Yasser** Flutter Developer
+
+---
    
