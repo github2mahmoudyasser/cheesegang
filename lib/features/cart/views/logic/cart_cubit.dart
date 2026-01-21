@@ -1,6 +1,5 @@
 
 
-import 'package:cheesegang/core/network/api_error.dart';
 import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
@@ -14,6 +13,7 @@ class CartCubit extends Cubit<CartState> {
   GetCartModel? currentModel;
   final DetailsRepo detailsRepo;
   CartCubit(this.cartRepo,  this.detailsRepo,  ) :super(CartInitial());
+
 
   //get cart
   Future<void> getCart() async {

@@ -104,11 +104,7 @@ class _CartItemState extends State<CartItem> {
                         color: AppColors.primary,
                       ),
                       child: Center(
-                        child: widget.isLoading
-                            ? CupertinoActivityIndicator(
-                          color: Colors.white,
-                        )
-                            : CustomText(
+                        child: CustomText(
                           text: "Remove",
                           color: Colors.white,
                         ),
