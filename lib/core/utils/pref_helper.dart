@@ -84,7 +84,9 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
               static Future<GetCartModel?>  getCachedCart()async{
                 final box = await _getBox<GetCartModel>(_cartBox);
                 return box.get("current_cart");
+
               }
+
 
 
 

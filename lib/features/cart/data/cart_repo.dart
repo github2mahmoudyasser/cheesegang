@@ -2,9 +2,8 @@
       import 'package:cheesegang/core/network/api_error.dart';
 import 'package:cheesegang/core/network/api_exception.dart';
 import 'package:cheesegang/core/network/api_service.dart';
+import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
-import 'package:cheesegang/features/checkout/data/checkout_model.dart';
-import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:dio/dio.dart';
 
 
@@ -18,15 +17,26 @@ import 'package:dio/dio.dart';
               final getCartRequest = await apiService.get("/cart");
               if(getCartRequest is ApiError){
               throw ApiError(message: getCartRequest.message);
-
               }
-
-               return GetCartModel.fromJson(getCartRequest);
+                final cartModel =GetCartModel.fromJson(getCartRequest);
+                await PrefHelper.cachedCart(cartModel);
+                return cartModel;
 
             } on DioException catch(e){
+              // get data from cached if lose internet;
+              final cashedCart = await PrefHelper.getCachedCart();
+              if(cashedCart!=null){
+                return cashedCart;
+
+              }
                throw ApiExceptions.handleError(e);
             }catch(e){
-               throw ApiError(message: e.toString());
+              final cashedCart = await PrefHelper.getCachedCart();
+              if(cashedCart!=null){
+                return cashedCart;
+
+              }
+               throw ApiError(message: "server Error, please try again");
             }
 
           }
@@ -38,6 +48,7 @@ import 'package:dio/dio.dart';
           if(deleteRequest["code"]!=200){
             throw ApiError(message: deleteRequest["message"]);
           }
+          await getCartData();
         } on DioException catch(e){
            throw ApiExceptions.handleError(e);
         }catch(e){
