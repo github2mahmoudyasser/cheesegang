@@ -2,6 +2,7 @@
    import 'package:cheesegang/core/network/api_error.dart';
 import 'package:cheesegang/core/network/api_exception.dart';
 import 'package:cheesegang/core/network/api_service.dart';
+import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:dio/dio.dart';
 
 import '../../cart/data/cart_model.dart';
@@ -25,17 +26,29 @@ class DetailsRepo {
            if(code!=200&&code!=201){
              throw ApiError(message: msg);
            }
-           return (toppingsRequest["data"] as List)
-               .map((topping)=>DetailsModel.fromJson(topping))
+           List<DetailsModel> toppings = (toppingsRequest["data"] as List)
+               .map((product) => DetailsModel.fromJson(product))
                .toList();
+            
+              await PrefHelper.cashedToppings(toppings);
+              return toppings;
+
         }
        return[];
 
-     }on DioException catch(e){
+     }on DioException catch(e) {
+       // get data from cached if lose internet
+       final  cashedToppings = await PrefHelper.getCachedToppings();
+       if(cashedToppings.isNotEmpty){
+         return cashedToppings;
+       }
        throw ApiExceptions.handleError(e);
-     }catch(e){
-      if(e is ApiError) rethrow; // i use rethrow here to throw the same Api message that i throw up in my code //بقلة ارمي نفس الخطا اللي رميتة فوق
-        throw ApiError(message: e.toString());  // if i use throw here it will throw bad message
+     }catch(e) {
+       final cashedToppings = await PrefHelper.getCachedToppings();
+       if (cashedToppings.isNotEmpty) {
+         return cashedToppings;
+       }
+       throw ApiError(message: "Server error, please try again");
      }
 
 
@@ -55,17 +68,20 @@ class DetailsRepo {
            if(code!=200&&code!=201){
              throw ApiError(message: msg);
            }
-           return
-             (optionsRequest["data"] as List)
-        .map((options)=>DetailsModel.fromJson(options))
-               .toList();
+          List<DetailsModel> options = (optionsRequest["data"] as List)
+           .map((e)=>DetailsModel.fromJson(e)).toList();
+           return options;
         }
         return [];
       }on DioException catch(e){
+        final cashedOptions = await PrefHelper.getCachedToppings();
+        if(cashedOptions.isNotEmpty){
+          return cashedOptions;
+        }
          throw ApiExceptions.handleError(e);
       }catch(e){
-        if(e is ApiError) rethrow;
-        throw ApiError(message: e.toString());
+        throw ApiError(message: "Server Error, please try again.");
+
 
       }
   }

@@ -66,217 +66,215 @@ import '../../data/details_model.dart';
           bool loadToppings = state is GetToppingLoading;   // ask the state load or no
           final List<DetailsModel> toppings =
               context.read<ProductDetailsCubit>().toppings ?? []; // to fetch topping data
-
-
           bool loadSideOptions = state is GetOptionsLoading;
           final List<DetailsModel> options = context.read<ProductDetailsCubit>().options ?? [];
+
           return Scaffold(
-            backgroundColor: Colors.white,
-           // app bar
-            appBar:  AppBar(
-              elevation: 0,
-              backgroundColor: Colors.white,
-              leading: GestureDetector(
-                onTap: (){
-                  Navigator.pop(context);
-                },
-                  child: Icon(CupertinoIcons.arrow_left)),
-            ),
+             backgroundColor: Colors.white,
+             // app bar
+             appBar:  AppBar(
+               elevation: 0,
+               backgroundColor: Colors.white,
+               leading: GestureDetector(
+                   onTap: (){
+                     Navigator.pop(context);
+                   },
+                   child: Icon(CupertinoIcons.arrow_left)),
+             ),
 
-            body: RefreshIndicator(
-              backgroundColor: AppColors.primary,
-              onRefresh: ()async{
-                await Future.wait([
-                  context.read<ProductDetailsCubit>().getToppings(),
-                  context.read<ProductDetailsCubit>().getOptions(),
-                ]
-                );
+             body: RefreshIndicator(
+               backgroundColor: AppColors.primary,
+               onRefresh: ()async{
+                 await Future.wait([
+                   context.read<ProductDetailsCubit>().getToppings(),
+                   context.read<ProductDetailsCubit>().getOptions(),
+                 ]
+                 );
 
-              },
+               },
 
-              child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    // spicy slider contain 3d pic and slider
-                    SpicySlider(value:value, onChanged:(v){
-                      setState(() =>value = v);
-                    }),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // topping name
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: CustomText(text: "Toppings",color: Colors.black,weight: FontWeight.w700,size: 15,),
-                        ),
+               child: SingleChildScrollView(
+                 physics: AlwaysScrollableScrollPhysics(),
+                 child: Column(
+                   children: [
+                     // spicy slider contain 3d pic and slider
+                     SpicySlider(value:value, onChanged:(v){
+                       setState(() =>value = v);
+                     }),
+                     Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         // topping name
+                         Padding(
+                           padding: const EdgeInsets.all(10),
+                           child: CustomText(text: "Toppings",color: Colors.black,weight: FontWeight.w700,size: 15,),
+                         ),
 
-                        // toppings
-                        Skeletonizer(
-                          enabled: loadToppings ,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(
-                                // if state is load show 4 else show topping data
-                                loadToppings ? 4 : toppings.length,
-                                    (index) {
+                         // toppings
+                         Skeletonizer(
+                           enabled: loadToppings ,
+                           child: SingleChildScrollView(
+                             scrollDirection: Axis.horizontal,
+                             child: Row(
+                               children: List.generate(
+                                 // if state is load show 4 else show topping data
+                                 loadToppings ? 4 : toppings.length,
+                                     (index) {
 
                                    //set fake topping when load data
-                                  final topping = loadToppings
-                                      ? DetailsModel(
-                                    id: 0,
-                                    name: "Loading...",
-                                    image: "image",
-                                  )
-                                      : toppings[index];
+                                   final topping = loadToppings
+                                       ? DetailsModel(
+                                     id: 0,
+                                     name: "Loading...",
+                                     image: "image",
+                                   )
+                                       : toppings[index];
                                    final id  = topping.id;
                                    final isSelectToppings  = selectToppings.contains(id);
 
-                                return ToppingCard(
-                                    image:topping.image,
-                                    title: topping.name,
-                                    border: Border.all(
-                                      width: 2,
-                                      color: isSelectToppings ? AppColors.primary:Colors.white,
-                                    ),
-                                    textColor: isSelectToppings ? Colors.black:Colors.grey.shade600,
-                                    onAdd: (){
-                                      if(loadToppings)return; // this line for stop  click when load data
-                                     setState(() {
-                                       if(isSelectToppings){
-                                         selectToppings.remove(id);
-                                       }else{
-                                         selectToppings.add(id);
-                                       }
-                                     });
-                                    });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
+                                   return ToppingCard(
+                                       image:topping.image,
+                                       title: topping.name,
+                                       border: Border.all(
+                                         width: 2,
+                                         color: isSelectToppings ? AppColors.primary:Colors.white,
+                                       ),
+                                       textColor: isSelectToppings ? Colors.black:Colors.grey.shade600,
+                                       onAdd: (){
+                                         if(loadToppings)return; // this line for stop  click when load data
+                                         setState(() {
+                                           if(isSelectToppings){
+                                             selectToppings.remove(id);
+                                           }else{
+                                             selectToppings.add(id);
+                                           }
+                                         });
+                                       });
+                                 },
+                               ),
+                             ),
+                           ),
+                         ),
 
-                        const Gap(10),
+                         const Gap(10),
 
                          //side option name
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: CustomText(text: "Side Options",color: Colors.black,weight: FontWeight.w700,size: 15,),
-                        ),
-                       // side options
-                        Skeletonizer(
-                          enabled: loadSideOptions,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(
-                                loadSideOptions ? 4 : options.length,
-                                    (index) {
-                                  // بنجهز الـ Model للـ Options
-                                  final option = loadSideOptions
-                                      ? DetailsModel(
-                                    id: 0,
-                                    name: "Loading...",
-                                    image: "image",
-                                  )
-                                      : options[index];
-                                  final id = option.id;
-                                  final isSelectOption = selectSideOptions.contains(id);
+                         Padding(
+                           padding: const EdgeInsets.all(10),
+                           child: CustomText(text: "Side Options",color: Colors.black,weight: FontWeight.w700,size: 15,),
+                         ),
+                         // side options
+                         Skeletonizer(
+                           enabled: loadSideOptions,
+                           child: SingleChildScrollView(
+                             scrollDirection: Axis.horizontal,
+                             child: Row(
+                               children: List.generate(
+                                 loadSideOptions ? 4 : options.length,
+                                     (index) {
+                                   // بنجهز الـ Model للـ Options
+                                   final option = loadSideOptions
+                                       ? DetailsModel(
+                                     id: 0,
+                                     name: "Loading...",
+                                     image: "image",
+                                   )
+                                       : options[index];
+                                   final id = option.id;
+                                   final isSelectOption = selectSideOptions.contains(id);
 
-                                  return ToppingCard(
-                                      image: option.image,
-                                      title: option.name,
-                                      border:Border.all(
-                                        width: 2,
-                                        color: isSelectOption ? AppColors.primary: Colors.white
-                                      ),
-                                      textColor: isSelectOption ? Colors.black:Colors.grey.shade600,
-                                      onAdd: (){
-                                        if(loadSideOptions)return;
-                                              setState(() {
-                                                if(isSelectOption){
-                                                  selectSideOptions.remove(id);
-                                                }else{
-                                                  selectSideOptions.add(id);
-                                                }
-                                              });
+                                   return ToppingCard(
+                                       image: option.image,
+                                       title: option.name,
+                                       border:Border.all(
+                                           width: 2,
+                                           color: isSelectOption ? AppColors.primary: Colors.white
+                                       ),
+                                       textColor: isSelectOption ? Colors.black:Colors.grey.shade600,
+                                       onAdd: (){
+                                         if(loadSideOptions)return;
+                                         setState(() {
+                                           if(isSelectOption){
+                                             selectSideOptions.remove(id);
+                                           }else{
+                                             selectSideOptions.add(id);
+                                           }
+                                         });
 
-                                      }
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
+                                       }
+                                   );
+                                 },
+                               ),
+                             ),
+                           ),
+                         ),
 
                          const Gap(35),
 
                          //finish order & TotalPrice
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //Total Price
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(text: "Total:",size: 20,color: Colors.black,),
-                        CustomText(text: "\$ ${widget.productPrice}",size:25,weight: FontWeight.bold,color: Colors.black),
-                      ],
-                    ),
+                         Padding(
+                           padding: const EdgeInsets.symmetric(horizontal: 10),
+                           child: Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                               //Total Price
+                               Column(
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 children: [
+                                   CustomText(text: "Total:",size: 20,color: Colors.black,),
+                                   CustomText(text: "\$ ${widget.productPrice}",size:25,weight: FontWeight.bold,color: Colors.black),
+                                 ],
+                               ),
 
-                    //AddToCart
-                    GestureDetector(
-                      onTap: (){
-                        context.read<ProductDetailsCubit>().addToCart(
-                            productId: widget.productId,
-                            qty: 1,
-                            spicy: value,
-                            toppings: selectToppings,
-                            options: selectSideOptions);
-                        Navigator.push(context, MaterialPageRoute(builder: (c)=>CartView()));
-                      },
-
-
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: AppColors.primary,
-                        ),
-                        child: state is AddToCartLoading
-                        ? Row(
-                          children: [
-                            CustomText(
-                              text:"Add To Cart",
-                              color: Colors.white,
-                            ),
-                            CupertinoActivityIndicator()
-                          ],
-                        )
-                        :CustomText(
-                          text:"Add To Cart",
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-                      ],
-                    ),
+                               //AddToCart
+                               GestureDetector(
+                                 onTap: (){
+                                   context.read<ProductDetailsCubit>().addToCart(
+                                       productId: widget.productId,
+                                       qty: 1,
+                                       spicy: value,
+                                       toppings: selectToppings,
+                                       options: selectSideOptions);
+                                   Navigator.push(context, MaterialPageRoute(builder: (c)=>CartView()));
+                                 },
 
 
-                  ],
-                ),
-              ),
-            ),
+                                 child: Container(
+                                   padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                                   decoration: BoxDecoration(
+                                     borderRadius: BorderRadius.circular(15),
+                                     color: AppColors.primary,
+                                   ),
+                                   child: state is AddToCartLoading
+                                       ? Row(
+                                     children: [
+                                       CustomText(
+                                         text:"Add To Cart",
+                                         color: Colors.white,
+                                       ),
+                                       CupertinoActivityIndicator()
+                                     ],
+                                   )
+                                       :CustomText(
+                                     text:"Add To Cart",
+                                     color: Colors.white,
+                                   ),
+                                 ),
+                               )
+                             ],
+                           ),
+                         )
+                       ],
+                     ),
 
-          );
-      },
 
+                   ],
+                 ),
+               ),
+             ),
+
+           );
+         }
           );
     }
   }
