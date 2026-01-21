@@ -60,12 +60,7 @@ class _CartViewState extends State<CartView> {
         //cartScreen
         return Scaffold(
           backgroundColor: Colors.white,
-          body: RefreshIndicator(
-            onRefresh: () async {
-              await context.read<CartCubit>().getCart();
-            },
-            child: _buildBody(context, state,),
-          ),
+          body: _buildBody(context, state),
         );
       },
     );
@@ -95,30 +90,37 @@ class _CartViewState extends State<CartView> {
         child: Column(
           children: [
             Expanded(
-              child: Skeletonizer(
-                enabled: waitingServer ,
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
+              child: RefreshIndicator(
+                onRefresh: ()async{
+                  await context.read<CartCubit>().getCart();
 
-                    if (item == null) {
-                      return const CartItem(isLoading: true,
-                          image: '',
-                          text: '...',
-                          desc: '...',
-                          quantity: 1);
-                    }
+                },
+                child: Skeletonizer(
+                  enabled: waitingServer ,
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
 
-                    return CartItem(
-                      isLoading: false,
-                      image: item.image,
-                      text: item.name,
-                      desc: "spicy ${item.spicy}",
-                      quantity: item.qty,
-                      onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
-                    );
-                  },
+                      if (item == null) {
+                        return const CartItem(isLoading: true,
+                            image: '',
+                            text: '...',
+                            desc: '...',
+                            quantity: 1);
+                      }
+
+                      return CartItem(
+                        isLoading: false,
+                        image: item.image,
+                        text: item.name,
+                        desc: "spicy ${item.spicy}",
+                        quantity: item.qty,
+                        onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

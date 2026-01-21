@@ -18,12 +18,7 @@ class CartCubit extends Cubit<CartState> {
   //get cart
   Future<void> getCart() async {
     currentModel = await PrefHelper.getCachedCart();
-    if ( currentModel != null) {
-      emit(CartSuccess(cartModel: currentModel!));
-    } else if (currentModel == null) {
-      emit(CartLoading());
-    }
-
+    emit(CartLoading(currentModel: currentModel));
     try {
       final cartData = await cartRepo.getCartData();
       if (cartData != null) {
@@ -33,6 +28,8 @@ class CartCubit extends Cubit<CartState> {
     } catch (e) {
       if (currentModel == null) {
         emit(CartError(message: "Check your internet connection"));
+      }else{
+        emit(CartSuccess(cartModel: currentModel!));
       }
     }
   }
@@ -50,20 +47,23 @@ class CartCubit extends Cubit<CartState> {
 
 // delete from cart
 
- Future<void> deleteItem(int itemId)async{
- try{
-   await cartRepo.removeCartItem(itemId);
-   await getCart();
- }catch(e){
-   await getCart();
-   String msg = "Failed to delete item";
-    if(e is ApiError){
-      msg = e.toString();
-    }
-   emit(CartError(message: msg));
- }
+  Future<void> deleteItem(int itemId) async {
+    // delete data from memory before delete it from server
+    if (currentModel != null) {
+      currentModel!.cartData.items.removeWhere((item) => item.itemId == itemId);
 
- }
+      emit(CartSuccess(cartModel: currentModel!)); // fast refresh in ui and get fast data
+    }
+
+    try {
+      await cartRepo.removeCartItem(itemId); // delete from server
+      await getCart(); // get new data
+
+    } catch (e) {
+      await getCart(); // get  data if failed to delete and give me msg
+      emit(CartError(message: "Failed to delete this item!"));
+    }
+  }
 
 
 

@@ -235,7 +235,6 @@ import '../../data/details_model.dart';
                                        spicy: value,
                                        toppings: selectToppings,
                                        options: selectSideOptions);
-                                   Navigator.push(context, MaterialPageRoute(builder: (c)=>CartView()));
                                  },
 
 

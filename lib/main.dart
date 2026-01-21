@@ -4,6 +4,7 @@ import 'package:cheesegang/features/auth/view/login_screen/logic/login_cubit.dar
 import 'package:cheesegang/features/auth/view/profile_screen/logic/profile_cubit.dart';
 import 'package:cheesegang/features/auth/view/sign_screen/logic/signup_cubit.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
+import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
@@ -67,6 +68,7 @@ void main() async {
             BlocProvider(create: (context)=>RootCubit(),),
             BlocProvider(create: (context)=>HomeCubit(RepositoryProvider.of<ProductRepo>(context)),),
             BlocProvider(create: (context)=>ProductDetailsCubit(RepositoryProvider.of<DetailsRepo>(context),RepositoryProvider.of<CartRepo>(context)),),
+           BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context)))
             //BlocProvider(create: (context)=>FavCubit(RepositoryProvider.of<FavRepo>(context)),),
           //  BlocProvider(create: (context)=>OrderHisCubit(RepositoryProvider.of<OrderHisRepo>(context)),),
           ],
