@@ -1,32 +1,27 @@
 
 
 import 'package:cheesegang/core/network/api_error.dart';
+import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_state.dart';
-import 'package:cheesegang/features/checkout/data/checkout_model.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
-
-
-/*
 class CartCubit extends Cubit<CartState> {
   final CartRepo cartRepo;
   GetCartModel? currentModel;
-  CheckoutModel? checkoutModel;
   final DetailsRepo detailsRepo;
   CartCubit(this.cartRepo,  this.detailsRepo,  ) :super(CartInitial());
 
   //get cart
-  Future<void> getCart({bool withLoading = false}) async {
-    // لو إنت باعت withLoading بـ true (زي لما ترجع من التشيك أوت)
-    // هيبعت حالة Loading بس "ماسكة" الداتا القديمة عشان الشاشة ماتبيضش
-    if (withLoading && currentModel != null) {
-      emit(CartLoading(currentModel: currentModel));
+  Future<void> getCart() async {
+    currentModel = await PrefHelper.getCachedCart();
+    if ( currentModel != null) {
+      emit(CartSuccess(cartModel: currentModel!));
     } else if (currentModel == null) {
-      emit(CartLoading()); // لو أول مرة خالص
+      emit(CartLoading());
     }
 
     try {
@@ -36,7 +31,9 @@ class CartCubit extends Cubit<CartState> {
         emit(CartSuccess(cartModel: cartData));
       }
     } catch (e) {
-      emit(CartError(message: "Error"));
+      if (currentModel == null) {
+        emit(CartError(message: "Check your internet connection"));
+      }
     }
   }
 
@@ -69,8 +66,11 @@ class CartCubit extends Cubit<CartState> {
  }
 
 
+
+
+
    //check out
-  Future<void> checkOutOrder(List<CartItemModel> itemModel)async{
+  /*Future<void> checkOutOrder(List<CartItemModel> itemModel)async{
     emit(SaveOrderLoading());
     try{
      final List<CartModel> items  = itemModel.map((orders){
@@ -96,13 +96,11 @@ class CartCubit extends Cubit<CartState> {
 
   }
 
-
-
+   */
 
 
 }
 
- */
 
 
 
