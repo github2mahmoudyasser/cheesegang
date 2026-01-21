@@ -3,12 +3,14 @@
            // فيها برضو مسح التوكن لما تعوز تعمل لوج اوت
 
 
-            import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+            import 'package:cheesegang/features/product/data/details_model.dart';
+import 'package:hive_ce_flutter/hive_ce_flutter.dart';
             import '../../features/home/data/models/product_model.dart'; // تأكد من المسار صح
 
             class PrefHelper {
               static const String _userBoxName = "userBox";
               static const String _productsBoxName = "productsBox";
+              static const String _toppingsBox = "toppingsBox";
               static const String _tokenKey = "auth_token";
 
                // <T> this mean that function is generic that's mean this box contain String:(token) or products model
@@ -53,6 +55,20 @@
                 final box = await _getBox<ProductModel>(_productsBoxName);
                 return box.values.toList();
               }
+
+              // put topping data in cached
+              static Future <void> cashedToppings(List<DetailsModel> toppings)async{
+                final box =await _getBox<DetailsModel>(_toppingsBox);
+                await box.clear(); // delete old data
+                await box.addAll(toppings); // open new data
+              }
+
+              //get data from cached
+             static Future<List<DetailsModel>> getCachedToppings()async{
+                final box = await _getBox<DetailsModel>(_toppingsBox);
+                return box.values.toList();
+             }
+
 
                 // save image
               // use email here because all users have different images

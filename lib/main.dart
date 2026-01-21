@@ -5,6 +5,7 @@ import 'package:cheesegang/features/auth/view/profile_screen/logic/profile_cubit
 import 'package:cheesegang/features/auth/view/sign_screen/logic/signup_cubit.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
+import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_cubit.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,9 @@ void main() async {
   // Init Hive
   await Hive.initFlutter(); // to ask system do you give me space to put my data
   Hive.registerAdapter(ProductModelAdapter());
+  Hive.registerAdapter(DetailsModelAdapter()); // Hive now under stand detail model
   await Hive.openBox<ProductModel>('productsBox');
+  await Hive.openBox<DetailsModel>('toppingsBox'); // Initialization box when open app
   await Hive.openBox("userBox");// open the box fast to get token and image
 
   // 1. تجهيز الـ API والـ Repo
