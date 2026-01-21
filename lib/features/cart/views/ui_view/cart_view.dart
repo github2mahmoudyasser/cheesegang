@@ -2,7 +2,6 @@ import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_state.dart';
 import 'package:cheesegang/features/cart/widgets/cart_item.dart';
-import 'package:cheesegang/features/checkout/views/checkout_view.dart';
 import 'package:cheesegang/shared/widgets/costum_snakebar.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,27 +16,7 @@ import '../../../auth/view/login_screen/ui_view/login_view.dart';
 
 
 class CartView extends StatefulWidget {
-  const CartView({super.key});
-
-  @override
-  State<CartView> createState() => _CartViewState();
-}
-
-class _CartViewState extends State<CartView> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: CustomText(text: "cart"));
-  }
-}
-
-
-
-/*
-class CartView extends StatefulWidget {
   const CartView({super.key,});
-
-
-
 
   @override
   State<CartView> createState() => _CartViewState();
@@ -78,8 +57,6 @@ class _CartViewState extends State<CartView> {
         if (isGuest) {
           return _buildGuestView(context);
         }
-
-
         //cartScreen
         return Scaffold(
           backgroundColor: Colors.white,
@@ -94,26 +71,24 @@ class _CartViewState extends State<CartView> {
     );
   }
   Widget _buildBody(BuildContext context, CartState state) {
-    // 1. تحديد حالة التحميل
-    final bool isLoading = state is CartLoading || state is CartInitial;
-
-    // 2. سحب الداتا (التركاية هنا):
-    // لو إحنا في حالة نجاح، خد الداتا من الـ Success
-    // لو إحنا بنحمل، خد الداتا القديمة اللي إنت بعتها في الـ Loading
+    final bool waitingServer = state is CartLoading || state is CartInitial;
     CartData? cartData;
+
     if (state is CartSuccess) {
-      cartData = state.cartModel.cartData;
+      cartData = state.cartModel.cartData;  // get new data
     } else if (state is CartLoading) {
-      cartData = state.currentModel?.cartData; // الـ currentModel اللي إنت ضفته
+      cartData = state.currentModel?.cartData; // show old data when loading
     }
 
-    // 3. الشرط "الجبري": اعرض الداتا لو موجودة (حتى لو بنحمل)
-    if (cartData != null || isLoading) {
+    // if cart is empty
+    if (!waitingServer && cartData != null && cartData.items.isEmpty) {
+      return _buildEmptyCartView(context);
+    }
 
-      // لو لسه أول مرة خالص ومفيش داتا قديمة، اعمل لستة وهمية للسكيتليزر
-      final items = (isLoading && cartData == null)
-          ? List.generate(4, (index) => null)
-          : cartData?.items ?? [];
+    if (cartData != null || waitingServer) {
+      final items = (waitingServer && cartData == null)//  عملت كدا عشان المتغير دا يبقا المتحكم في الداتا لو في داتا يعرضها لو مفيش يعرض داتا وهمية
+          ? List.generate(4, (index) => null) // if data = null show 4 fake item
+          : cartData?.items ?? []; // or show cart items from Api or cached
 
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -121,14 +96,18 @@ class _CartViewState extends State<CartView> {
           children: [
             Expanded(
               child: Skeletonizer(
-                enabled: isLoading, // السكيتليزر هيشتغل فوق الداتا القديمة
+                enabled: waitingServer ,
                 child: ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
 
                     if (item == null) {
-                      return const CartItem(isLoading: true, image: '', text: '...', desc: '...', quantity: 1);
+                      return const CartItem(isLoading: true,
+                          image: '',
+                          text: '...',
+                          desc: '...',
+                          quantity: 1);
                     }
 
                     return CartItem(
@@ -138,14 +117,12 @@ class _CartViewState extends State<CartView> {
                       desc: "spicy ${item.spicy}",
                       quantity: item.qty,
                       onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
-                      // ... باقي الـ callbacks
                     );
                   },
                 ),
               ),
             ),
             const Gap(10),
-            // التوتال هيفضل ظاهر بالأرقام القديمة لحد ما الجديدة تيجي
             if (cartData != null)
               _buildTotalSection(context, state, cartData),
             const Gap(85),
@@ -174,18 +151,7 @@ class _CartViewState extends State<CartView> {
           ],
         ),
         GestureDetector(
-          onTap: state is SaveOrderLoading
-              ?null
-              :() {
-            context.read<CartCubit>().checkOutOrder(product.items);
-            Navigator.push(context, MaterialPageRoute(builder: (c)=>CheckoutView(totalPrice:product.totalPrice )),
-            ).then((_){
-              if(context.mounted){
-                context.read<CartCubit>().getCart(withLoading: true);
-              }
-            });
-
-          },
+          onTap: (){},
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             decoration: BoxDecoration(
@@ -266,7 +232,6 @@ class _CartViewState extends State<CartView> {
 
   }
 
- */
 
 
 
