@@ -2,6 +2,7 @@ import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_state.dart';
 import 'package:cheesegang/features/cart/widgets/cart_item.dart';
+import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
 import 'package:cheesegang/shared/widgets/costum_snakebar.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,6 +38,10 @@ class _CartViewState extends State<CartView> {
   Widget build(BuildContext context) {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
+
+        if(state is AddToCartSuccess){
+          context.read<CartCubit>().getCart();
+        }
         // checkout state
         if(state is SaveOrderSuccess){
           ScaffoldMessenger.of(context).showSnackBar(customSnack("Check Out Success"));

@@ -235,6 +235,7 @@ import '../../data/details_model.dart';
                                        spicy: value,
                                        toppings: selectToppings,
                                        options: selectSideOptions);
+
                                  },
 
 
