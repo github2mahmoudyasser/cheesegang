@@ -17,9 +17,10 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../data/details_model.dart';
   class ProductDetailsView extends StatefulWidget {
-    const ProductDetailsView({super.key, required this.productId, required this.productPrice,});
+    const ProductDetailsView({super.key, required this.productId, required this.productPrice, required this.image,});
     final int productId;
     final String productPrice;
+    final String image;
 
 
     @override
@@ -97,11 +98,24 @@ import '../../data/details_model.dart';
                  physics: AlwaysScrollableScrollPhysics(),
                  child: Column(
                    children: [
+                     SizedBox(
+                       height: 200,
+                       width: double.infinity,
+                       child: Image.network(
+                         widget.image,
+                         fit: BoxFit.contain,
+                         errorBuilder: (context,error,stakeTrace)=>const Icon(Icons.broken_image, size: 50),
+                       ) ,
+                     ),
                      // spicy slider contain 3d pic and slider
                      SpicySlider(value:value,
-                         quantity: 1,
-                         onAdd: (){},
-                         onMin: (){},
+                         quantity: context.read<ProductDetailsCubit>().quantity,
+                         onAdd: (){
+                           context.read<ProductDetailsCubit>().changeQuantity(1);
+                         },
+                         onMin: (){
+                           context.read<ProductDetailsCubit>().changeQuantity(-1);
+                         },
                          onChanged:(v){
                        setState(() =>value = v);
                      }),
@@ -226,8 +240,7 @@ import '../../data/details_model.dart';
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  children: [
                                    CustomText(text: "Total:",size: 20,color: Colors.black,),
-                                   CustomText(text: "\$ ${widget.productPrice}",size:25,weight: FontWeight.bold,color: Colors.black),
-                                 ],
+                             CustomText(text:"\$ ${(double.parse(widget.productPrice) * context.read<ProductDetailsCubit>().quantity).toStringAsFixed(2)}"),                                 ],
                                ),
 
                                //AddToCart
@@ -254,7 +267,6 @@ import '../../data/details_model.dart';
                                  onTap: (){
                                    context.read<ProductDetailsCubit>().addToCart(
                                        productId: widget.productId,
-                                       qty: 1,
                                        spicy: value,
                                        toppings: selectToppings,
                                        options: selectSideOptions);

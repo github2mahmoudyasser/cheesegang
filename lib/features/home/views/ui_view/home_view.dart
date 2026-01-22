@@ -242,6 +242,7 @@ class _HomeViewState extends State<HomeView> {
                                    return GestureDetector(
                                      onTap: (){
                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductDetailsView(
+                                         image: product.image,
                                          productId: product.id,
                                          productPrice: product.price,)));
                                      },

@@ -14,6 +14,7 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
   final CartRepo cartRepo;
   List<DetailsModel>? toppings;
   List<DetailsModel>? options;
+  int quantity = 1;
   ProductDetailsCubit(this.detailsRepo,this.cartRepo):super(InitialState());
 
    // getToppings
@@ -53,11 +54,18 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
   }
 
 
+  void changeQuantity(int newQty){
+   if(quantity + newQty >=1){
+     quantity +=newQty;
+   }
+   emit(ChangeQuantity(quantity: quantity));
+  }
+
+
 
    //add to cart
   Future<void> addToCart({
     required int productId,
-    required int qty,
     required double spicy,
     required List<int> toppings,
     required List<int> options,
@@ -66,7 +74,7 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
    try{
      final cartItem = SandwichModel(
          productId: productId,
-         qty: qty,
+         qty: quantity,
        spicy: spicy,
        toppings: toppings,
        options: options,
@@ -85,6 +93,7 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
   }
 
   void resetState() {
+   quantity = 1;
     emit(InitialState());
   }
 

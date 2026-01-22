@@ -19,7 +19,7 @@ import '../../../shared/widgets/costum_text.dart';
 class SpicySlider extends StatefulWidget {
   const SpicySlider({super.key,
     required this.value,
-    required this.onChanged, this.onAdd, this.onMin, required this.quantity});
+    required this.onChanged, this.onAdd, this.onMin, required this.quantity, });
   final double value;
   final ValueChanged<double> onChanged;
   final Function()? onAdd;
@@ -37,22 +37,10 @@ class _SpicySliderState extends State<SpicySlider> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
                children: [
-          // we make sized box to set height and width to 3d model
-      SizedBox(
-        height: 200,
-        width: double.infinity,
-        child: ModelViewer(
-          src: "assets/3d/cheeseburger.glb",    // هنا الملف من الـ assets
-          autoRotate: true,
-          cameraControls: true,
-          disableZoom: true,
-          ar: false,
-
-        ),
-      ),
             const Gap(10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
                 onTap: widget.onMin,
