@@ -58,7 +58,7 @@ class _CartViewState extends State<CartView> {
 
         // delete state
          if(state is DeleteFailure){
-           ScaffoldMessenger
+           ScaffoldMessenger.of(context).showSnackBar(customSnack("please, try again"));
          }
 
 
@@ -131,6 +131,8 @@ class _CartViewState extends State<CartView> {
                         desc: "spicy ${item.spicy}",
                         quantity: item.qty,
                         onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
+                        onAdd: ()=>context.read<CartCubit>().changeQuantity(item.productId, item.qty),
+                        onMin: ()=>context.read<CartCubit>().changeQuantity(item.productId, item.qty),
                       );
                     },
                   ),
