@@ -32,7 +32,12 @@ class CartState extends Equatable{
      SaveOrderFailure({required this.message});
     }
 
-    class DeleteLoading extends CartState{}
+    class DeleteLoading extends CartState{
+     final int itemId;
+     DeleteLoading({required this.itemId});
+     @override
+     List<Object?> get props => [itemId];
+    }
     class DeleteSuccess extends CartState{
     final GetCartModel cartModel;
     DeleteSuccess({required this.cartModel});

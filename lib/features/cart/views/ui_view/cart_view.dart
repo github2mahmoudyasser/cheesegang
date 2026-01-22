@@ -56,6 +56,10 @@ class _CartViewState extends State<CartView> {
               customSnack("Failed to get cart, please try again"));
         }
 
+        if(state is  DeleteLoading){
+          CupertinoActivityIndicator();
+        }
+
         // delete state
          if(state is DeleteFailure){
            ScaffoldMessenger.of(context).showSnackBar(customSnack("please, try again"));
