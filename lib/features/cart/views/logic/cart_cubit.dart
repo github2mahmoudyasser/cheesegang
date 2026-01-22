@@ -52,7 +52,7 @@ class CartCubit extends Cubit<CartState> {
     // delete data from memory before delete it from server
     if (currentModel != null) {
       currentModel!.cartData.items.removeWhere((item) => item.itemId == itemId);
-       emit(DeleteSuccess(cartModel:  currentModel!));       // fast refresh in ui and get fast data
+      emit(CartSuccess(cartModel: currentModel!));      // fast refresh in ui and get fast data
     }
     try {
       await cartRepo.removeCartItem(itemId); // delete from server
