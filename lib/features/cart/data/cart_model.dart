@@ -4,10 +4,6 @@ import 'dart:core';
 import 'package:hive_ce/hive.dart';
 part 'cart_model.g.dart';
 
-
-
-
-
    //Get Cart from Api
 @HiveType(typeId: 2)
 class GetCartModel extends HiveObject {

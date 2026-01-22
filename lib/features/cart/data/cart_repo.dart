@@ -6,6 +6,8 @@ import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:dio/dio.dart';
 
+import '../../product/data/details_model.dart';
+
 
   class CartRepo{
    final ApiService apiService;
