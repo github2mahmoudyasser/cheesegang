@@ -133,12 +133,12 @@ class _CartViewState extends State<CartView> {
                         onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
                         onAdd: (){
 
-                            context.read<CartCubit>().changeQuantity(item.productId, item.qty+1);
+                            context.read<CartCubit>().changeQuantity(item.productId, 1);
 
                         },
                         onMin: () {
                           if(item.qty>1){
-                            context.read<CartCubit>().changeQuantity(item.productId, item.qty-1);
+                            context.read<CartCubit>().changeQuantity(item.productId,-1);
                           }
                         }
                       );

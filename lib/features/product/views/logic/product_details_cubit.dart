@@ -64,7 +64,7 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
 })async{
    emit(AddToCartLoading());
    try{
-     final cartItem = CartModel(
+     final cartItem = SandwichModel(
          productId: productId,
          qty: qty,
        spicy: spicy,

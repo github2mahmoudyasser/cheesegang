@@ -3,55 +3,12 @@ import 'dart:core';
 
 import 'package:hive_ce/hive.dart';
 part 'cart_model.g.dart';
-//Add To Cart to Api
-
-class CartModel{
-  final int productId;
-  final   int qty;
-  final  double? spicy;
-  final   List<int>? toppings;
-  final List<int>? options;
 
 
-  CartModel({
-    required this.productId,
-    required this.qty,
-    this.spicy,
-     this.toppings,
-     this.options
-
-  });
-  Map<String,dynamic>toJson()=>{
-    "product_id":productId,
-    "quantity":qty,
-    "spicy":spicy??0.0,
-    "toppings":toppings??[],
-    "side_options":options??[],
-
-
-  };
-
-
-}
-class CartRequestModel{
-  final  List<CartModel> items;
-
-  CartRequestModel({
-    required this.items
-  });
-
-
-  Map<String,dynamic>toJson()=>{
-    "items":items.map((items)=>items.toJson()).toList()
-  };
-}
 
 
 
    //Get Cart from Api
-
-
-
 @HiveType(typeId: 2)
 class GetCartModel extends HiveObject {
   @HiveField(0)

@@ -39,7 +39,7 @@ class CartCubit extends Cubit<CartState> {
   Future<void> changeQuantity(int productId, int changeQty)async{
     try{
       final request = CartRequestModel(items: [
-        CartModel(productId: productId, qty: changeQty)
+        SandwichModel(productId: productId, qty: changeQty)
       ]);
       await detailsRepo.addToCart(request);
       await getCart();
