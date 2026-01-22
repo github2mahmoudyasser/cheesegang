@@ -34,6 +34,7 @@ class CartItem extends StatefulWidget {
 class _CartItemState extends State<CartItem> {
   @override
   Widget build(BuildContext context ) {
+    final state = CartState();
     return Card(
       color: Colors.white,
       child: Padding(
@@ -104,7 +105,9 @@ class _CartItemState extends State<CartItem> {
                         color: AppColors.primary,
                       ),
                       child: Center(
-                        child: CustomText(
+                        child:  state  is DeleteLoading?
+                        CupertinoActivityIndicator()
+                        :CustomText(
                           text: "Remove",
                           color: Colors.white,
                         ),
