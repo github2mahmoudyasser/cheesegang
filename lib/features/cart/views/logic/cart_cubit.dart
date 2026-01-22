@@ -41,7 +41,6 @@ class CartCubit extends Cubit<CartState> {
 
 
 // delete from cart
-
   Future<void> deleteItem(int itemId) async {
     emit(DeleteLoading(itemId: itemId));
     // delete data from memory before delete it from server
