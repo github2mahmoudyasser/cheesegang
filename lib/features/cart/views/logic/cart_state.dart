@@ -31,3 +31,13 @@ class CartState extends Equatable{
      final String message;
      SaveOrderFailure({required this.message});
     }
+
+    class DeleteLoading extends CartState{}
+    class DeleteSuccess extends CartState{
+    final GetCartModel cartModel;
+    DeleteSuccess({required this.cartModel});
+    }
+    class DeleteFailure extends CartState{
+      final String message;
+      DeleteFailure({required this.message});
+    }

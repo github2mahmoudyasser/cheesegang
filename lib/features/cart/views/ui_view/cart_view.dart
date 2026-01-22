@@ -39,9 +39,12 @@ class _CartViewState extends State<CartView> {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
 
+
+        // add to cart state
         if(state is AddToCartSuccess){
           context.read<CartCubit>().getCart();
         }
+
         // checkout state
         if(state is SaveOrderSuccess){
           ScaffoldMessenger.of(context).showSnackBar(customSnack("Check Out Success"));
@@ -52,6 +55,11 @@ class _CartViewState extends State<CartView> {
           ScaffoldMessenger.of(context).showSnackBar(
               customSnack("Failed to get cart, please try again"));
         }
+
+        // delete state
+         if(state is DeleteFailure){
+           ScaffoldMessenger
+         }
 
 
         if(state is SaveOrderFailure){
