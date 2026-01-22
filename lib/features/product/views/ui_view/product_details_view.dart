@@ -98,7 +98,11 @@ import '../../data/details_model.dart';
                  child: Column(
                    children: [
                      // spicy slider contain 3d pic and slider
-                     SpicySlider(value:value, onChanged:(v){
+                     SpicySlider(value:value,
+                         quantity: 1,
+                         onAdd: (){},
+                         onMin: (){},
+                         onChanged:(v){
                        setState(() =>value = v);
                      }),
                      Column(
@@ -209,7 +213,7 @@ import '../../data/details_model.dart';
                            ),
                          ),
 
-                         const Gap(35),
+                         const Gap(25),
 
                          //finish order & TotalPrice
                          Padding(
@@ -227,7 +231,26 @@ import '../../data/details_model.dart';
                                ),
 
                                //AddToCart
+                               state is AddToCartSuccess?
                                GestureDetector(
+                                 onTap: (){
+                                   context.read<ProductDetailsCubit>().resetState();
+                                   Navigator.push(context, MaterialPageRoute(builder: (c)=>CartView()));
+                                 },
+                                 child: Container(
+                                     padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                                     decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(15),
+                                       color: AppColors.primary,
+                                     ),
+                                     child:CustomText(
+                                       text:"View Cart",
+                                       color: Colors.white,
+                                     )
+                                 ),
+                               )
+
+                              : GestureDetector(
                                  onTap: (){
                                    context.read<ProductDetailsCubit>().addToCart(
                                        productId: widget.productId,
@@ -258,13 +281,18 @@ import '../../data/details_model.dart';
                                        :CustomText(
                                      text:"Add To Cart",
                                      color: Colors.white,
-                                   ),
+                                   )
+
+
                                  ),
                                )
+
                              ],
                            ),
                          )
+
                        ],
+
                      ),
 
 

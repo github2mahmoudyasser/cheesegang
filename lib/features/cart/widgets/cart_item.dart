@@ -69,29 +69,18 @@ class _CartItemState extends State<CartItem> {
               children: [
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: widget.onMin,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primary,
-                        child: Icon(CupertinoIcons.minus, color: Colors.white),
-                      ),
-                    ),
+                 CustomText(text: "Qty",size: 18,weight: FontWeight.bold,),
                     Gap(20),
                     CustomText(
-                      text: widget.quantity.toString(),
+                      text:":",
                       weight: FontWeight.w400,
-                      size: 18,
+                      size: 15,
                     ),
                     Gap(20),
-                    GestureDetector(
-                      onTap: widget.onAdd,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primary,
-                        child: Icon(CupertinoIcons.add, color: Colors.white),
-                      ),
-                    ),
+                 CustomText(text: widget.quantity.toString(),
+                   size: 18,
+                   weight: FontWeight.bold,
+                 )
                   ],
                 ),
                 Gap(20),
@@ -105,9 +94,7 @@ class _CartItemState extends State<CartItem> {
                         color: AppColors.primary,
                       ),
                       child: Center(
-                        child:  widget.isLoading?
-                        CupertinoActivityIndicator()
-                        :CustomText(
+                        child: CustomText(
                           text: "Remove",
                           color: Colors.white,
                         ),

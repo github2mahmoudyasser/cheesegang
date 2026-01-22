@@ -84,6 +84,10 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
 
   }
 
+  void resetState() {
+    emit(InitialState());
+  }
+
   }
 
 

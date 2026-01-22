@@ -12,8 +12,6 @@ class SandwichModel{
   final  double? spicy;
   final   List<int>? toppings;
   final List<int>? options;
-
-
   SandwichModel({
     required this.productId,
     required this.qty,
