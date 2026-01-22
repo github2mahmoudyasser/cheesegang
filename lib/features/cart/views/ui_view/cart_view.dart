@@ -97,19 +97,17 @@ class _CartViewState extends State<CartView> {
       final items = (waitingServer && cartData == null)//  عملت كدا عشان المتغير دا يبقا المتحكم في الداتا لو في داتا يعرضها لو مفيش يعرض داتا وهمية
           ? List.generate(4, (index) => null) // if data = null show 4 fake item
           : cartData?.items ?? []; // or show cart items from Api or cached
-
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Column(
-          children: [
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: ()async{
-                  await context.read<CartCubit>().getCart();
-
-                },
-                child: Skeletonizer(
-                  enabled: waitingServer ,
+        child: Skeletonizer(
+          enabled: waitingServer,
+          child: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await context.read<CartCubit>().getCart();
+                  },
                   child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: items.length,
@@ -117,33 +115,37 @@ class _CartViewState extends State<CartView> {
                       final item = items[index];
 
                       if (item == null) {
-                        return const CartItem(isLoading: true,
-                            image: '',
-                            text: '...',
-                            desc: '...',
-                            quantity: 1);
+                        return const CartItem(
+                          isLoading: true,
+                          image: '',
+                          text: '...',
+                          desc: '...',
+                          quantity: 1,
+                        );
                       }
 
                       return CartItem(
-                        isLoading: false,
+                        isLoading: state is DeleteLoading && state.itemId == item.itemId,
                         image: item.image,
                         text: item.name,
                         desc: "spicy ${item.spicy}",
                         quantity: item.qty,
                         onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
-                        onAdd: ()=>context.read<CartCubit>().changeQuantity(item.productId, item.qty),
-                        onMin: ()=>context.read<CartCubit>().changeQuantity(item.productId, item.qty),
+                        onAdd: () => context.read<CartCubit>().changeQuantity(item.productId, item.qty),
+                        onMin: () => context.read<CartCubit>().changeQuantity(item.productId, item.qty),
                       );
                     },
                   ),
                 ),
               ),
-            ),
-            const Gap(10),
-            if (cartData != null)
-              _buildTotalSection(context, state, cartData),
-            const Gap(85),
-          ],
+
+              if (items.isNotEmpty || waitingServer)... [  // spread operator to add list of objects in column
+                const Gap(10),
+                _buildTotalSection(context, state, cartData),
+                const Gap(85),
+              ],
+            ],
+          ),
         ),
       );
     }
@@ -152,7 +154,7 @@ class _CartViewState extends State<CartView> {
     return const SizedBox.shrink();
   }
 
-  Widget _buildTotalSection(BuildContext context,CartState state,CartData product) {
+  Widget _buildTotalSection(BuildContext context,CartState state,CartData? product) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -161,7 +163,7 @@ class _CartViewState extends State<CartView> {
           children: [
             CustomText(text: "Total", size: 20),
             CustomText(
-              text: "\$ ${product.totalPrice}",
+              text: "\$ ${product?.totalPrice}",
               size: 30,
               weight: FontWeight.bold,
             ),
@@ -203,6 +205,7 @@ class _CartViewState extends State<CartView> {
             SliverFillRemaining(
               child: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.shopping_cart, size: 70,color: AppColors.primary,),
                     const Gap(10),
