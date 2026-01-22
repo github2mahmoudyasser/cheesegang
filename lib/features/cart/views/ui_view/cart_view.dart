@@ -56,10 +56,6 @@ class _CartViewState extends State<CartView> {
               customSnack("Failed to get cart, please try again"));
         }
 
-        if(state is  DeleteLoading){
-          CupertinoActivityIndicator();
-        }
-
         // delete state
          if(state is DeleteFailure){
            ScaffoldMessenger.of(context).showSnackBar(customSnack("please, try again"));
@@ -196,16 +192,38 @@ class _CartViewState extends State<CartView> {
 
 
   Widget _buildEmptyCartView(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.shopping_cart_outlined, size: 70, color: AppColors.primary),
-          const Gap(10),
-          CustomText(text: "Your cart is empty!", size: 18, weight: FontWeight.bold),
-        ],
-      ),
-    );
+    return RefreshIndicator(
+      onRefresh:()async{
+        await context.read<CartCubit>().getCart();
+        
+    },
+        child: CustomScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.shopping_cart, size: 70,color: AppColors.primary,),
+                    const Gap(10),
+                    CustomText(text: "Your cart is empty!",
+                    size: 18,
+                      weight:  FontWeight.bold,
+                    ),
+                    const Gap(20),
+                    TextButton.icon(onPressed: ()=>context.read<CartCubit>().getCart(),
+                        icon: const Icon(Icons.refresh),
+                    label: const Text("Try Refresh"),)
+                  ],
+                  
+                ),
+              ),
+              
+            )
+          ],
+        
+    ),
+       );
   }
 
   Widget _buildErrorView(BuildContext context, String message) {

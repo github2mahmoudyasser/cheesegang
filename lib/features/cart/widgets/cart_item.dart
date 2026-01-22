@@ -105,7 +105,7 @@ class _CartItemState extends State<CartItem> {
                         color: AppColors.primary,
                       ),
                       child: Center(
-                        child:  state  is DeleteLoading?
+                        child:  widget.isLoading?
                         CupertinoActivityIndicator()
                         :CustomText(
                           text: "Remove",

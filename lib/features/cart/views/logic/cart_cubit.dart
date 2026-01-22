@@ -48,7 +48,7 @@ class CartCubit extends Cubit<CartState> {
 // delete from cart
 
   Future<void> deleteItem(int itemId) async {
-    emit(DeleteLoading());
+    emit(DeleteLoading(itemId: itemId));
     // delete data from memory before delete it from server
     if (currentModel != null) {
       currentModel!.cartData.items.removeWhere((item) => item.itemId == itemId);
