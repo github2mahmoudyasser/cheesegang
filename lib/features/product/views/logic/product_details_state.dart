@@ -50,7 +50,13 @@ abstract class ProductDetailsState extends Equatable {
        }
 
 
-
+      //change qty
+        class ChangeQuantity extends ProductDetailsState{
+          final int quantity;
+          ChangeQuantity({required this.quantity});
+          @override
+          List<Object?> get props => [quantity];
+        }
 
 
         // Add to cart states

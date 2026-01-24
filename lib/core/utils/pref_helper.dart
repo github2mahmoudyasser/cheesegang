@@ -3,7 +3,8 @@
            // فيها برضو مسح التوكن لما تعوز تعمل لوج اوت
 
 
-            import 'package:cheesegang/features/product/data/details_model.dart';
+            import 'package:cheesegang/features/cart/data/cart_model.dart';
+import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
             import '../../features/home/data/models/product_model.dart'; // تأكد من المسار صح
 
@@ -11,6 +12,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
               static const String _userBoxName = "userBox";
               static const String _productsBoxName = "productsBox";
               static const String _toppingsBox = "toppingsBox";
+              static const String _cartBox = "cartBox";
               static const String _tokenKey = "auth_token";
 
                // <T> this mean that function is generic that's mean this box contain String:(token) or products model
@@ -68,6 +70,25 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
                 final box = await _getBox<DetailsModel>(_toppingsBox);
                 return box.values.toList();
              }
+
+             // cart box
+              // put data in cached
+              static Future<void> cachedCart(GetCartModel cart)async{
+                final box = await _getBox<GetCartModel>(_cartBox);
+                await box.clear();
+                await box.put("current_cart", cart);// i use put because when hive load cart item hive will delete old cart and give me new cart item ,because cart screen  need the new cartItem not old cart items
+
+              }
+
+              // get cart data from cashed
+              static Future<GetCartModel?>  getCachedCart()async{
+                final box = await _getBox<GetCartModel>(_cartBox);
+                return box.get("current_cart");
+
+              }
+
+
+
 
 
                 // save image

@@ -4,6 +4,7 @@ import 'package:cheesegang/features/auth/view/login_screen/logic/login_cubit.dar
 import 'package:cheesegang/features/auth/view/profile_screen/logic/profile_cubit.dart';
 import 'package:cheesegang/features/auth/view/sign_screen/logic/signup_cubit.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
+import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/navigation/app_navigator.dart';
 import 'core/network/api_service.dart';
 import 'features/auth/data/auth_repo.dart';
+import 'features/cart/data/cart_model.dart';
 import 'features/home/data/models/product_model.dart';
 import 'features/home/data/repo/product_repo.dart';
 import 'features/splash_screen/view/logic/splash_cubit.dart';
@@ -28,8 +30,14 @@ void main() async {
 
   // Init Hive
   await Hive.initFlutter(); // to ask system do you give me space to put my data
-  Hive.registerAdapter(ProductModelAdapter());
-  Hive.registerAdapter(DetailsModelAdapter()); // Hive now under stand detail model
+  Hive.registerAdapter(ProductModelAdapter());// TypeId 0
+  Hive.registerAdapter(DetailsModelAdapter());// TypeId 1 // Hive now under stand detail model
+  Hive.registerAdapter(GetCartModelAdapter());// TypeId 2
+  Hive.registerAdapter(CartDataAdapter());// TypeId 3
+  Hive.registerAdapter(CartItemModelAdapter());// TypeId 4
+  Hive.registerAdapter(ToppingsAdapter());// TypeId 5
+  Hive.registerAdapter(SideOptionsAdapter());// TypeId 6
+
   await Hive.openBox<ProductModel>('productsBox');
   await Hive.openBox<DetailsModel>('toppingsBox'); // Initialization box when open app
   await Hive.openBox("userBox");// open the box fast to get token and image
@@ -60,6 +68,7 @@ void main() async {
             BlocProvider(create: (context)=>RootCubit(),),
             BlocProvider(create: (context)=>HomeCubit(RepositoryProvider.of<ProductRepo>(context)),),
             BlocProvider(create: (context)=>ProductDetailsCubit(RepositoryProvider.of<DetailsRepo>(context),RepositoryProvider.of<CartRepo>(context)),),
+           BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context)))
             //BlocProvider(create: (context)=>FavCubit(RepositoryProvider.of<FavRepo>(context)),),
           //  BlocProvider(create: (context)=>OrderHisCubit(RepositoryProvider.of<OrderHisRepo>(context)),),
           ],

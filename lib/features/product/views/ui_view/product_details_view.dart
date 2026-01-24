@@ -2,6 +2,7 @@
 
 
 import 'package:cheesegang/core/constants/app_colors.dart';
+import 'package:cheesegang/features/Root/logic/root_cubit.dart';
 import 'package:cheesegang/features/cart/views/ui_view/cart_view.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_cubit.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
@@ -17,9 +18,10 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../data/details_model.dart';
   class ProductDetailsView extends StatefulWidget {
-    const ProductDetailsView({super.key, required this.productId, required this.productPrice,});
+    const ProductDetailsView({super.key, required this.productId, required this.productPrice, required this.image,});
     final int productId;
     final String productPrice;
+    final String image;
 
 
     @override
@@ -97,8 +99,25 @@ import '../../data/details_model.dart';
                  physics: AlwaysScrollableScrollPhysics(),
                  child: Column(
                    children: [
+                     SizedBox(
+                       height: 200,
+                       width: double.infinity,
+                       child: Image.network(
+                         widget.image,
+                         fit: BoxFit.contain,
+                         errorBuilder: (context,error,stakeTrace)=>const Icon(Icons.broken_image, size: 50),
+                       ) ,
+                     ),
                      // spicy slider contain 3d pic and slider
-                     SpicySlider(value:value, onChanged:(v){
+                     SpicySlider(value:value,
+                         quantity: context.read<ProductDetailsCubit>().quantity,
+                         onAdd: (){
+                           context.read<ProductDetailsCubit>().changeQuantity(1);
+                         },
+                         onMin: (){
+                           context.read<ProductDetailsCubit>().changeQuantity(-1);
+                         },
+                         onChanged:(v){
                        setState(() =>value = v);
                      }),
                      Column(
@@ -209,7 +228,7 @@ import '../../data/details_model.dart';
                            ),
                          ),
 
-                         const Gap(35),
+                         const Gap(25),
 
                          //finish order & TotalPrice
                          Padding(
@@ -222,20 +241,39 @@ import '../../data/details_model.dart';
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  children: [
                                    CustomText(text: "Total:",size: 20,color: Colors.black,),
-                                   CustomText(text: "\$ ${widget.productPrice}",size:25,weight: FontWeight.bold,color: Colors.black),
-                                 ],
+                             CustomText(text:"\$ ${(double.parse(widget.productPrice) * context.read<ProductDetailsCubit>().quantity).toStringAsFixed(2)}",
+                               size: 30,
+                               weight: FontWeight.bold,),                                 ],
                                ),
 
                                //AddToCart
+                               state is AddToCartSuccess?
                                GestureDetector(
+                                 onTap: (){
+                                   context.read<ProductDetailsCubit>().resetState();
+                                   Navigator.pop(context);
+                                   context.read<RootCubit>().changeScreen(1);                                 },
+                                 child: Container(
+                                     padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                                     decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(15),
+                                       color: AppColors.primary,
+                                     ),
+                                     child:CustomText(
+                                       text:"View Cart",
+                                       color: Colors.white,
+                                     )
+                                 ),
+                               )
+
+                              : GestureDetector(
                                  onTap: (){
                                    context.read<ProductDetailsCubit>().addToCart(
                                        productId: widget.productId,
-                                       qty: 1,
                                        spicy: value,
                                        toppings: selectToppings,
                                        options: selectSideOptions);
-                                   Navigator.push(context, MaterialPageRoute(builder: (c)=>CartView()));
+
                                  },
 
 
@@ -258,13 +296,18 @@ import '../../data/details_model.dart';
                                        :CustomText(
                                      text:"Add To Cart",
                                      color: Colors.white,
-                                   ),
+                                   )
+
+
                                  ),
                                )
+
                              ],
                            ),
                          )
+
                        ],
+
                      ),
 
 

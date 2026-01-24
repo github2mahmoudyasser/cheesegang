@@ -2,7 +2,7 @@ import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_state.dart';
 import 'package:cheesegang/features/cart/widgets/cart_item.dart';
-import 'package:cheesegang/features/checkout/views/checkout_view.dart';
+import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
 import 'package:cheesegang/shared/widgets/costum_snakebar.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,27 +17,7 @@ import '../../../auth/view/login_screen/ui_view/login_view.dart';
 
 
 class CartView extends StatefulWidget {
-  const CartView({super.key});
-
-  @override
-  State<CartView> createState() => _CartViewState();
-}
-
-class _CartViewState extends State<CartView> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: CustomText(text: "cart"));
-  }
-}
-
-
-
-/*
-class CartView extends StatefulWidget {
   const CartView({super.key,});
-
-
-
 
   @override
   State<CartView> createState() => _CartViewState();
@@ -58,6 +38,13 @@ class _CartViewState extends State<CartView> {
   Widget build(BuildContext context) {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
+
+
+        // add to cart state
+        if(state is AddToCartSuccess){
+          context.read<CartCubit>().getCart();
+        }
+
         // checkout state
         if(state is SaveOrderSuccess){
           ScaffoldMessenger.of(context).showSnackBar(customSnack("Check Out Success"));
@@ -69,6 +56,11 @@ class _CartViewState extends State<CartView> {
               customSnack("Failed to get cart, please try again"));
         }
 
+        // delete state
+         if(state is DeleteFailure){
+           ScaffoldMessenger.of(context).showSnackBar(customSnack("please, try again"));
+         }
+
 
         if(state is SaveOrderFailure){
           ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
@@ -78,78 +70,82 @@ class _CartViewState extends State<CartView> {
         if (isGuest) {
           return _buildGuestView(context);
         }
-
-
         //cartScreen
         return Scaffold(
           backgroundColor: Colors.white,
-          body: RefreshIndicator(
-            onRefresh: () async {
-              await context.read<CartCubit>().getCart();
-            },
-            child: _buildBody(context, state,),
-          ),
+          body: _buildBody(context, state),
         );
       },
     );
   }
   Widget _buildBody(BuildContext context, CartState state) {
-    // 1. تحديد حالة التحميل
-    final bool isLoading = state is CartLoading || state is CartInitial;
-
-    // 2. سحب الداتا (التركاية هنا):
-    // لو إحنا في حالة نجاح، خد الداتا من الـ Success
-    // لو إحنا بنحمل، خد الداتا القديمة اللي إنت بعتها في الـ Loading
+    final bool waitingServer = state is CartLoading || state is CartInitial;
     CartData? cartData;
+
     if (state is CartSuccess) {
-      cartData = state.cartModel.cartData;
+      cartData = state.cartModel.cartData;  // get new data
     } else if (state is CartLoading) {
-      cartData = state.currentModel?.cartData; // الـ currentModel اللي إنت ضفته
+      cartData = state.currentModel?.cartData; // show old data when loading
     }
 
-    // 3. الشرط "الجبري": اعرض الداتا لو موجودة (حتى لو بنحمل)
-    if (cartData != null || isLoading) {
+    // if cart is empty
+    if (!waitingServer && cartData != null && cartData.items.isEmpty) {
+      return _buildEmptyCartView(context);
+    }
 
-      // لو لسه أول مرة خالص ومفيش داتا قديمة، اعمل لستة وهمية للسكيتليزر
-      final items = (isLoading && cartData == null)
-          ? List.generate(4, (index) => null)
-          : cartData?.items ?? [];
-
+    if (cartData != null || waitingServer) {
+      final items = (waitingServer && cartData == null)//  عملت كدا عشان المتغير دا يبقا المتحكم في الداتا لو في داتا يعرضها لو مفيش يعرض داتا وهمية
+          ? List.generate(4, (index) => null) // if data = null show 4 fake item
+          : cartData?.items ?? []; // or show cart items from Api or cached
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Column(
-          children: [
-            Expanded(
-              child: Skeletonizer(
-                enabled: isLoading, // السكيتليزر هيشتغل فوق الداتا القديمة
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-
-                    if (item == null) {
-                      return const CartItem(isLoading: true, image: '', text: '...', desc: '...', quantity: 1);
-                    }
-
-                    return CartItem(
-                      isLoading: false,
-                      image: item.image,
-                      text: item.name,
-                      desc: "spicy ${item.spicy}",
-                      quantity: item.qty,
-                      onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
-                      // ... باقي الـ callbacks
-                    );
+        child: Skeletonizer(
+          enabled: waitingServer,
+          child: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await context.read<CartCubit>().getCart();
                   },
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+
+                      if (item == null) {
+                        return const CartItem(
+                          isLoading: true,
+                          image: '',
+                          text: '...',
+                          spicy: '...',
+                          quantity: 1,
+                          price: "0",
+                        );
+                      }
+
+                      return CartItem(
+                        isLoading: state is DeleteLoading && state.itemId == item.itemId,
+                        image: item.image,
+                        text: item.name,
+                        spicy: "spicy: ${item.spicy} 🌶",
+                        price: "Price:  ${item.price } \$",
+                        quantity: item.qty,
+                        onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            const Gap(10),
-            // التوتال هيفضل ظاهر بالأرقام القديمة لحد ما الجديدة تيجي
-            if (cartData != null)
-              _buildTotalSection(context, state, cartData),
-            const Gap(85),
-          ],
+
+              if (items.isNotEmpty || waitingServer)... [  // spread operator to add list of objects in column
+                const Gap(10),
+                _buildTotalSection(context, state, cartData),
+                const Gap(85),
+              ],
+            ],
+          ),
         ),
       );
     }
@@ -158,7 +154,14 @@ class _CartViewState extends State<CartView> {
     return const SizedBox.shrink();
   }
 
-  Widget _buildTotalSection(BuildContext context,CartState state,CartData product) {
+  Widget _buildTotalSection(BuildContext context,CartState state,CartData? product) {
+   double total = 0;
+   if(product!= null){
+     for (var item in product.items){
+       double price = double.tryParse(item.price.toString())??0.0;
+       total += (price * item.qty);
+     }
+   }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -167,25 +170,14 @@ class _CartViewState extends State<CartView> {
           children: [
             CustomText(text: "Total", size: 20),
             CustomText(
-              text: "\$ ${product.totalPrice}",
+              text: " ${total.toStringAsFixed(2)} \$",
               size: 30,
               weight: FontWeight.bold,
             ),
           ],
         ),
         GestureDetector(
-          onTap: state is SaveOrderLoading
-              ?null
-              :() {
-            context.read<CartCubit>().checkOutOrder(product.items);
-            Navigator.push(context, MaterialPageRoute(builder: (c)=>CheckoutView(totalPrice:product.totalPrice )),
-            ).then((_){
-              if(context.mounted){
-                context.read<CartCubit>().getCart(withLoading: true);
-              }
-            });
-
-          },
+          onTap: (){},
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             decoration: BoxDecoration(
@@ -209,16 +201,39 @@ class _CartViewState extends State<CartView> {
 
 
   Widget _buildEmptyCartView(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.shopping_cart_outlined, size: 70, color: AppColors.primary),
-          const Gap(10),
-          CustomText(text: "Your cart is empty!", size: 18, weight: FontWeight.bold),
-        ],
-      ),
-    );
+    return RefreshIndicator(
+      onRefresh:()async{
+        await context.read<CartCubit>().getCart();
+        
+    },
+        child: CustomScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.shopping_cart, size: 70,color: AppColors.primary,),
+                    const Gap(10),
+                    CustomText(text: "Your cart is empty!",
+                    size: 18,
+                      weight:  FontWeight.bold,
+                    ),
+                    const Gap(20),
+                    TextButton.icon(onPressed: ()=>context.read<CartCubit>().getCart(),
+                        icon: const Icon(Icons.refresh),
+                    label: const Text("Try Refresh"),)
+                  ],
+                  
+                ),
+              ),
+              
+            )
+          ],
+        
+    ),
+       );
   }
 
   Widget _buildErrorView(BuildContext context, String message) {
@@ -266,7 +281,6 @@ class _CartViewState extends State<CartView> {
 
   }
 
- */
 
 
 

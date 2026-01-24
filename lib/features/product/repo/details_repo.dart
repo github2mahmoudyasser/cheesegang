@@ -3,6 +3,7 @@
 import 'package:cheesegang/core/network/api_exception.dart';
 import 'package:cheesegang/core/network/api_service.dart';
 import 'package:cheesegang/core/utils/pref_helper.dart';
+import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
 import 'package:dio/dio.dart';
 
 import '../../cart/data/cart_model.dart';
