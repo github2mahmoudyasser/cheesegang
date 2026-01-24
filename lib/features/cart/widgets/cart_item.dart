@@ -12,15 +12,15 @@ class CartItem extends StatefulWidget {
     super.key,
     required this.image,
     required this.text,
-    required this.desc,
+    required this.spicy,
     this.onAdd,
     this.onMin,
     this.onRemove,
     required this.quantity,
-    required this.isLoading,
+    required this.isLoading, required this.price,
   });
 
-  final String image, text, desc;
+  final String image, text, spicy,price;
   final Function()? onAdd;
   final Function()? onMin;
   final Function()? onRemove;
@@ -61,7 +61,14 @@ class _CartItemState extends State<CartItem> {
                     text: widget.text,
                     weight: FontWeight.bold,
                   ),
-                  CustomText(text: widget.desc),
+                  CustomText(
+                    text: widget.spicy,
+                    weight: FontWeight.bold,
+                  ),
+                  CustomText(
+                    text: widget.price,
+                    weight: FontWeight.bold,
+                  ),
                 ],
               ),
             ),

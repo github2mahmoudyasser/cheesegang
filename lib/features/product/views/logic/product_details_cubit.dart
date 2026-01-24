@@ -57,8 +57,9 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
   void changeQuantity(int newQty){
    if(quantity + newQty >=1){
      quantity +=newQty;
+     emit(ChangeQuantity(quantity: quantity));
+
    }
-   emit(ChangeQuantity(quantity: quantity));
   }
 
 

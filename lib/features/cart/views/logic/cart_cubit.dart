@@ -37,20 +37,6 @@ class CartCubit extends Cubit<CartState> {
   }
 
 
- //change quantity
-  Future<void> changeQuantity(int productId, int changeQty)async{
-    try{
-      final request = CartRequestModel(items: [
-        SandwichModel(productId: productId, qty: changeQty)
-      ]);
-      await detailsRepo.addToCart(request);
-      await getCart();
-    }catch(e){
-      emit(CartSuccess(cartModel: currentModel!));
-    }
-
-  }
-
 
 // delete from cart
 

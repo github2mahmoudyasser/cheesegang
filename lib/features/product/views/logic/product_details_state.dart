@@ -54,6 +54,8 @@ abstract class ProductDetailsState extends Equatable {
         class ChangeQuantity extends ProductDetailsState{
           final int quantity;
           ChangeQuantity({required this.quantity});
+          @override
+          List<Object?> get props => [quantity];
         }
 
 

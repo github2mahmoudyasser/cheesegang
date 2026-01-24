@@ -2,6 +2,7 @@
 
 
 import 'package:cheesegang/core/constants/app_colors.dart';
+import 'package:cheesegang/features/Root/logic/root_cubit.dart';
 import 'package:cheesegang/features/cart/views/ui_view/cart_view.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_cubit.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
@@ -240,7 +241,9 @@ import '../../data/details_model.dart';
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  children: [
                                    CustomText(text: "Total:",size: 20,color: Colors.black,),
-                             CustomText(text:"\$ ${(double.parse(widget.productPrice) * context.read<ProductDetailsCubit>().quantity).toStringAsFixed(2)}"),                                 ],
+                             CustomText(text:"\$ ${(double.parse(widget.productPrice) * context.read<ProductDetailsCubit>().quantity).toStringAsFixed(2)}",
+                               size: 30,
+                               weight: FontWeight.bold,),                                 ],
                                ),
 
                                //AddToCart
@@ -248,8 +251,8 @@ import '../../data/details_model.dart';
                                GestureDetector(
                                  onTap: (){
                                    context.read<ProductDetailsCubit>().resetState();
-                                   Navigator.push(context, MaterialPageRoute(builder: (c)=>CartView()));
-                                 },
+                                   Navigator.pop(context);
+                                   context.read<RootCubit>().changeScreen(1);                                 },
                                  child: Container(
                                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
                                      decoration: BoxDecoration(

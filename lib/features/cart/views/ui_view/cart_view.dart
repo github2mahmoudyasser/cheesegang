@@ -119,8 +119,9 @@ class _CartViewState extends State<CartView> {
                           isLoading: true,
                           image: '',
                           text: '...',
-                          desc: '...',
+                          spicy: '...',
                           quantity: 1,
+                          price: "0",
                         );
                       }
 
@@ -128,7 +129,8 @@ class _CartViewState extends State<CartView> {
                         isLoading: state is DeleteLoading && state.itemId == item.itemId,
                         image: item.image,
                         text: item.name,
-                        desc: "spicy ${item.spicy}",
+                        spicy: "spicy: ${item.spicy} 🌶",
+                        price: "Price:  ${item.price } \$",
                         quantity: item.qty,
                         onRemove: () => context.read<CartCubit>().deleteItem(item.itemId),
                       );
@@ -153,6 +155,13 @@ class _CartViewState extends State<CartView> {
   }
 
   Widget _buildTotalSection(BuildContext context,CartState state,CartData? product) {
+   double total = 0;
+   if(product!= null){
+     for (var item in product.items){
+       double price = double.tryParse(item.price.toString())??0.0;
+       total += (price * item.qty);
+     }
+   }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -161,7 +170,7 @@ class _CartViewState extends State<CartView> {
           children: [
             CustomText(text: "Total", size: 20),
             CustomText(
-              text: "\$ ${product?.totalPrice}",
+              text: " ${total.toStringAsFixed(2)} \$",
               size: 30,
               weight: FontWeight.bold,
             ),
