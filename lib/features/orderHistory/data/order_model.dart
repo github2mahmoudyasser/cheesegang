@@ -1,45 +1,8 @@
 
-    //save orders
-    class OrderModel{
-          final int productId;
-          final int qty;
-          final double spicy;
-          final List<int> toppings;
-          final List<int> options;
 
-           OrderModel({
-             required this.productId,
-             required this.qty,
-             required this.spicy,
-             required this.toppings,
-             required this.options
-
-    });
-            Map<String,dynamic> toJson()=>{
-              "product_id":productId,
-              "quantity":qty,
-              "spicy":spicy,
-              "toppings":toppings,
-              "side_options":options,
-
-            };
-
-}
-   class OrderRequestModel{
-     final List<OrderModel> items;
-
-      OrderRequestModel({
-        required this.items
-
-   });
-       Map<String,dynamic> toJson()=>{
-         "items":items.map((e)=>e.toJson()).toList()
-       };
-   }
 
 
       //get orders
-
       class GetOrderModel{
           final int code;
           final String message;
