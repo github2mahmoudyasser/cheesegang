@@ -3,7 +3,6 @@
 
 
 
-/*
   class CheckoutModel {
      final List<OrderItem> orders;
      CheckoutModel({required this.orders});
@@ -16,7 +15,7 @@
   class OrderItem{
    final int productId;
    final int qty;
-   final double spicy;
+    double? spicy;
    final List<int> toppings;
    final List<int> options;
 
@@ -39,4 +38,4 @@
 
   }
 
- */
+
