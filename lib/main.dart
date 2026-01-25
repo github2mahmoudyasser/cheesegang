@@ -8,6 +8,7 @@ import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/checkout/data/checkout_repo.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_cubit.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
+import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_cubit.dart';
@@ -41,10 +42,13 @@ void main() async {
   Hive.registerAdapter(ToppingsAdapter());// TypeId 5
   Hive.registerAdapter(SideOptionsAdapter());// TypeId 6
   Hive.registerAdapter(UserModelAdapter()); //TypeId 7
+  Hive.registerAdapter(OrderHisModelAdapter()); // TypeId 8
+  Hive.registerAdapter(OrderDataAdapter()); // TypeId 9
 
   await Hive.openBox<ProductModel>('productsBox');
   await Hive.openBox<DetailsModel>('toppingsBox'); // Initialization box when open app
   await Hive.openBox<GetCartModel>("cartBox");
+   await Hive.openBox<OrderHisModel>("orderHisBox");
   await Hive.openBox<UserModel>("userData");
   await Hive.openBox("userBox");// open the box fast to get token and image and userData
 
