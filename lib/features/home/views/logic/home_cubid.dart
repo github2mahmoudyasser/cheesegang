@@ -11,6 +11,12 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit(this.productRepo) : super(ProductInitial());
 
+
+ // reset home data
+  void clearHomeData() {
+    emit(ProductInitial());
+  }
+
   Future<void> getProducts() async {
     emit(ProductLoading());
     try {

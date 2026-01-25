@@ -3,7 +3,8 @@
            // فيها برضو مسح التوكن لما تعوز تعمل لوج اوت
 
 
-            import 'package:cheesegang/features/cart/data/cart_model.dart';
+            import 'package:cheesegang/features/auth/data/user_model.dart';
+import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
             import '../../features/home/data/models/product_model.dart'; // تأكد من المسار صح
@@ -13,6 +14,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
               static const String _productsBoxName = "productsBox";
               static const String _toppingsBox = "toppingsBox";
               static const String _cartBox = "cartBox";
+              static const String _userDataBox ="userData";
               static const String _tokenKey = "auth_token";
 
                // <T> this mean that function is generic that's mean this box contain String:(token) or products model
@@ -87,6 +89,18 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
               }
 
+               // put user data in cached
+                static Future<void> cachedUserData(UserModel userModel)async{
+                 final box = await _getBox<UserModel>(_userDataBox);
+                 await box.clear();
+                 await box.put("user_data", userModel);
+                }
+
+                // get user data from cached
+                static Future<UserModel?> getCachedUser()async{
+                 final box = await _getBox<UserModel>(_userDataBox);
+                 return box.get("user_data");
+                }
 
 
 

@@ -33,7 +33,9 @@ import 'package:dio/dio.dart';
                     }
                     final userData = UserModel.fromJson(data);
                     if (userData.token != null) {
-                      await PrefHelper.saveToken(userData.token!);
+                      await PrefHelper.saveToken(userData.token!); // save token
+                      await PrefHelper.cachedUserData(userData);
+
                     }
                     isGuest = false;
                     _currentUser = userData;
@@ -73,6 +75,7 @@ import 'package:dio/dio.dart';
 
                    // the response
                    final profileResponse = UserModel.fromJson(profileRequest["data"]);
+
                    isGuest = false;
                    _currentUser = profileResponse;
                    return profileResponse;
@@ -139,7 +142,7 @@ import 'package:dio/dio.dart';
               //auto Login
           Future<UserModel?> autoLogin()async{
                 // check userToken
-            final token = PrefHelper.getToken();
+            final token =  await PrefHelper.getToken();
             if(token==null){
               _guestMode();
               return null;
@@ -154,12 +157,9 @@ import 'package:dio/dio.dart';
               _currentUser = userData;
               return userData;
             }catch(e){
-              if(e is ApiError || e is DioException){
-                throw e.toString();
-              }
-              await PrefHelper.removeToken();
-              _guestMode();
-              return null;
+             isGuest = false;// if lose internet
+             return _currentUser ??
+                 UserModel(name: "Offline User",email: "offline@user.com");  //  fall back data if app lose internet and stop app go to login screen when lose internet
             }
 
           }

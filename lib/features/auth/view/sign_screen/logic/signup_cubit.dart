@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
               try{
                 final userData =  await authRepo.signUp(name, email, password);
                 if(userData!=null) {
-                  emit(SignSuccess());
+                  emit(SignUpSuccess(userModel: userData));
                 }
               }catch(e){
                 String msg = "Failed, Please try again";

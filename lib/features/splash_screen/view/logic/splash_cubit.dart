@@ -23,13 +23,12 @@ class SplashCubit extends Cubit<SplashState>{
              emit(UserUnLoggedIn());
            }
         }catch(e){
-         String msg ="Please go to Login";
-          if(e is ApiError){
-            msg = e.message;
+          if (authRepo.isGuest) {
+            emit(UserUnLoggedIn());;
           }else{
-            msg = e.toString();
+            emit(UserIsLoggedIn());
           }
-          emit(UserFailure(message: msg));
+
 
         }
      }

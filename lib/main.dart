@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/navigation/app_navigator.dart';
 import 'core/network/api_service.dart';
 import 'features/auth/data/auth_repo.dart';
+import 'features/auth/data/user_model.dart';
 import 'features/cart/data/cart_model.dart';
 import 'features/home/data/models/product_model.dart';
 import 'features/home/data/repo/product_repo.dart';
@@ -37,10 +38,13 @@ void main() async {
   Hive.registerAdapter(CartItemModelAdapter());// TypeId 4
   Hive.registerAdapter(ToppingsAdapter());// TypeId 5
   Hive.registerAdapter(SideOptionsAdapter());// TypeId 6
+  Hive.registerAdapter(UserModelAdapter()); //TypeId 7
 
   await Hive.openBox<ProductModel>('productsBox');
   await Hive.openBox<DetailsModel>('toppingsBox'); // Initialization box when open app
-  await Hive.openBox("userBox");// open the box fast to get token and image
+  await Hive.openBox<GetCartModel>("cartBox");
+  await Hive.openBox<UserModel>("userData");
+  await Hive.openBox("userBox");// open the box fast to get token and image and userData
 
   // 1. تجهيز الـ API والـ Repo
   final apiService = ApiService();
@@ -68,7 +72,7 @@ void main() async {
             BlocProvider(create: (context)=>RootCubit(),),
             BlocProvider(create: (context)=>HomeCubit(RepositoryProvider.of<ProductRepo>(context)),),
             BlocProvider(create: (context)=>ProductDetailsCubit(RepositoryProvider.of<DetailsRepo>(context),RepositoryProvider.of<CartRepo>(context)),),
-           BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context)))
+           BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context), RepositoryProvider.of<AuthRepo>(context)),)
             //BlocProvider(create: (context)=>FavCubit(RepositoryProvider.of<FavRepo>(context)),),
           //  BlocProvider(create: (context)=>OrderHisCubit(RepositoryProvider.of<OrderHisRepo>(context)),),
           ],

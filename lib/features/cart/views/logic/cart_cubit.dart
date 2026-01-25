@@ -1,51 +1,56 @@
 
 
 import 'package:cheesegang/core/utils/pref_helper.dart';
+import 'package:cheesegang/features/auth/data/auth_repo.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_state.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../product/data/details_model.dart';
+import 'package:hive_ce/hive.dart';
 
 
 class CartCubit extends Cubit<CartState> {
   final CartRepo cartRepo;
-  GetCartModel? currentModel;
+  GetCartModel? cartModel;
   final DetailsRepo detailsRepo;
-  CartCubit(this.cartRepo,  this.detailsRepo,  ) :super(CartInitial());
+  final  AuthRepo authRepo;
+
+  CartCubit(this.cartRepo,  this.detailsRepo,  this.authRepo ) :super(CartInitial());
 
 
   //get cart
   Future<void> getCart() async {
-    currentModel = await PrefHelper.getCachedCart();
-    emit(CartLoading(currentModel: currentModel));
+    cartModel = await PrefHelper.getCachedCart();
+    final token = await PrefHelper.getToken();
+    if (token == null || token.isEmpty || token== "Guest") {
+      emit( CartGuest());
+      return;
+    }
+    emit(CartLoading(currentModel: cartModel));
     try {
       final cartData = await cartRepo.getCartData();
       if (cartData != null) {
-        currentModel = cartData;
+        cartModel = cartData;
         emit(CartSuccess(cartModel: cartData));
       }
     } catch (e) {
-      if (currentModel == null) {
-        emit(CartError(message: "Check your internet connection"));
-      }else{
-        emit(CartSuccess(cartModel: currentModel!));
+      if (cartModel == null) {
+        emit( CartError(message: "Check your internet connection"));
+      } else {
+        emit(CartSuccess(cartModel: cartModel!));
       }
     }
   }
-
-
 
 // delete from cart
 
   Future<void> deleteItem(int itemId) async {
     emit(DeleteLoading(itemId: itemId));
     // delete data from memory before delete it from server
-    if (currentModel != null) {
-      currentModel!.cartData.items.removeWhere((item) => item.itemId == itemId);
-      emit(CartSuccess(cartModel: currentModel!));      // fast refresh in ui and get fast data
+    if (cartModel != null) {
+      cartModel!.cartData.items.removeWhere((item) => item.itemId == itemId);
+      emit(CartSuccess(cartModel: cartModel!));      // fast refresh in ui and get fast data
     }
     try {
       await cartRepo.removeCartItem(itemId); // delete from server
@@ -56,6 +61,20 @@ class CartCubit extends Cubit<CartState> {
       emit(CartError(message: "Failed to delete this item!"));
     }
   }
+
+
+
+  void clearCartData()async {
+    await Hive.box<GetCartModel>("cartBox").clear();
+    emit(CartInitial());
+  }
+  }
+
+
+
+
+
+
 
 
 
@@ -91,7 +110,7 @@ class CartCubit extends Cubit<CartState> {
    */
 
 
-}
+
 
 
 
