@@ -2,13 +2,28 @@
 //هو اللي بيحوّل بيانات الـ API لشكل منظم تقدر تستخدمه في الابلكيشن.
 
 
+import 'package:hive_ce/hive.dart';
+part 'user_model.g.dart';
+           @HiveType(typeId: 7)
           class UserModel{
+
+             @HiveField(0)
            final String name;
-           final String email;
-           final String? image;
-           final String? token;
-           final String? address;
-           final String? visa;
+
+             @HiveField(1)
+             final String email;
+
+             @HiveField(2)
+              String? image;
+
+             @HiveField(3)
+             final String? token;
+
+             @HiveField(4)
+             final String? address;
+
+             @HiveField(5)
+             final String? visa;
 
 
               UserModel({

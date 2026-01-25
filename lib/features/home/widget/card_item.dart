@@ -1,5 +1,6 @@
 
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cheesegang/core/constants/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,14 +33,15 @@ class CardItem extends StatelessWidget {
               child: Skeleton.replace(
                 width: 140,
                   height: 115,
-                  child: Image.network(image,width: 140,height:115,
+                  child: CachedNetworkImage(imageUrl: image,width: 140,height:115,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error ,stackTrace)=>Container(
+                    errorWidget: (context,url,error)=>Container(
                       color: Colors.grey.shade200,
-                      child: const Icon(Icons.broken_image, color: Colors.grey),
-                    )
-                    , )
+                      child: const Icon(Icons.broken_image,color: Colors.grey,),
+                    ),
+                     )
               ),
+
             )),
             Gap(10),
             CustomText(text: text,

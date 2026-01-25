@@ -71,7 +71,7 @@ class _SignupViewState extends State<SignupView> {
 
                  BlocConsumer<SignupCubit,SignupState>(
                    listener: (context,state){
-                     if(state is SignSuccess){
+                     if(state is SignUpSuccess){
                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (c)=>Root()));
                      }else if(state is SignFailure){
                        ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));

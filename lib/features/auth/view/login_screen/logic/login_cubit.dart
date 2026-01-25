@@ -16,7 +16,7 @@ import '../../../data/auth_repo.dart';
                    try{
                      final userData = await authRepo.login(email, password);
                      if(userData!=null) {
-                       emit(LoginSuccess());
+                       emit(LoginSuccess(userModel: userData)); //get user data when login success'
                      }
                    }catch(e){
                      String msg = "Failed To Login";

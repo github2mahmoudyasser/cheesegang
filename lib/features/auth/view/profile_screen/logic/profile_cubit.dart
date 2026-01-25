@@ -11,49 +11,64 @@ import '../../../data/user_model.dart';
    final AuthRepo authRepo;
    UserModel? userModel;
    String? selectImage;
+   String ? localImage;
 
    ProfileCubit(this.authRepo) :super(ProfileInitial());
 
    //Get Profile Data
    Future<void> getProfileData() async {
-     emit(ProfileLoading());
+     // 1. أولاً: نتحقق من وجود التوكن (ده الفيصل بين اليوزر والجيست)
+     final token = await PrefHelper.getToken();
 
-     // 1. لو هو داخل Guest من البداية
-     if (authRepo.isGuest) {
-       emit(ProfileGuest());
+     if (token == null || token.isEmpty || token == "Guest") {
+       userModel = null;
+       emit(ProfileGuest()); // هنا بس يروح لصفحة "سجل دخول"
        return;
      }
 
-     try {
-       userModel = await authRepo.autoLogin();
+     // 2. ثانياً: لو فيه توكن، نبدأ التحميل (User Mode)
+     emit(ProfileLoading());
 
-       if (userModel != null) {
-         // نجاح في جلب البيانات
-         if (userModel?.email != null) {
-           selectImage = await PrefHelper.getUserImage(userModel!.email);
-         }
-         emit(ProfileSuccess(userModel: userModel, localImage: selectImage));
+     try {
+       // محاولة جلب البيانات من الـ API
+       final data = await authRepo.getProfileData();
+
+       if (data != null) {
+         userModel = data;
+         localImage = await PrefHelper.getUserImage(userModel!.email);
+         emit(ProfileSuccess(userModel: userModel,localImage: localImage));
        } else {
-         // البيانات null يعني الـ Token مش موجود أو انتهى
-         emit(ProfileGuest());
+         // لو السيرفر رد بـ null رغم وجود توكن (مشكلة في الحساب)
+         emit(ProfileFailure(message: "User data not found"));
        }
      } catch (e) {
-       // 2. هنا الحل: لو حصل خطأ (نت مثلاً)
-       String msg = "Bad Connection. Please try again.";
-       if (e is ApiError) msg = e.message;
+       // 3. ثالثاً: لو حصل مشكلة في النت (DioException أو غيره)
+       // هنا بنبعت Failure عشان الـ UI يظهر شاشة الـ Error مش الـ Guest
+       String errorMessage = "Bad connection, please try again.";
 
-       // لو النت قطع ومعانا داتا قديمة، نفضل عارضينها (Success)
-       if (userModel != null) {
-         emit(ProfileSuccess(userModel: userModel, localImage: selectImage));
-       } else {
-         // لو مفيش داتا خالص، اظهر حالة الفشل (عشان تعرض أيقونة النت في الشاشة)
-         emit(ProfileFailure(message: msg));
-       }
+       // لو بتستخدم Dio ومسوي له Handler زي الـ Products
+       /*
+    if (e is DioException) {
+      errorMessage = ApiExceptions.handleError(e).toString();
+    }
+    */
+
+       emit(ProfileFailure(message: errorMessage));
      }
    }
 
+
+    // load image
+   Future <void> loadImage(String email)async{
+   localImage= await PrefHelper.getUserImage(email);
+   emit(ProfileSuccess(userModel: userModel,localImage: localImage));
+   }
+
+
+
      //log Out
   Future<void> logOut()async{
+     emit(LogOutLoading());
        try{
          await authRepo.logOut();
          emit(LogOutSuccess());

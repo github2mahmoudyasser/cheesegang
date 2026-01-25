@@ -3,19 +3,33 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
+import 'package:cheesegang/features/auth/data/user_model.dart';
+import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/home/data/models/product_model.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(CartDataAdapter());
+    registerAdapter(CartItemModelAdapter());
     registerAdapter(DetailsModelAdapter());
+    registerAdapter(GetCartModelAdapter());
     registerAdapter(ProductModelAdapter());
+    registerAdapter(SideOptionsAdapter());
+    registerAdapter(ToppingsAdapter());
+    registerAdapter(UserModelAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(CartDataAdapter());
+    registerAdapter(CartItemModelAdapter());
     registerAdapter(DetailsModelAdapter());
+    registerAdapter(GetCartModelAdapter());
     registerAdapter(ProductModelAdapter());
+    registerAdapter(SideOptionsAdapter());
+    registerAdapter(ToppingsAdapter());
+    registerAdapter(UserModelAdapter());
   }
 }

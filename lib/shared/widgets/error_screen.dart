@@ -9,15 +9,15 @@ import '../../features/auth/widgets/customAuthBottom.dart';
        const ErrorScreen({super.key,
          required this.text,
          required this.buttonText,
-         this.onTap,
-         required this.logButtonText,
+         required this.onTap,
+          this.logButtonText,
          this.log,});
        final String text;
        final String buttonText;
        final Function()? onTap;
 
-       final String logButtonText;
-       final Function()? log;
+    final   String? logButtonText;
+     final  Function()? log;
 
 
   @override
@@ -51,13 +51,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
                    fontSize: 18,
                  ),
                  Gap(10),
-                 CustomAuthButton(
-                   onTap: widget.log,
-                   text: widget.logButtonText,
-                   color: AppColors.primary,
-                   textColor: Colors.black,
-                   fontSize: 18,
-                 ),
                ],
              ),
            ),

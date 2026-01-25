@@ -34,7 +34,7 @@ class _SplashViewState extends State<SplashView> {
             if(state is UserIsLoggedIn){
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Root(),));
             }else if(state is UserUnLoggedIn){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginView(),));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Root(),));
             }else if(state is UserFailure){
               ScaffoldMessenger.of(context).showSnackBar(customSnack("Check, your internet ,or try to login again"));
               Navigator.pushReplacement(

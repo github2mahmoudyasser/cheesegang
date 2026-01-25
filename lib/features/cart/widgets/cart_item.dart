@@ -1,6 +1,5 @@
 
-import 'package:cheesegang/features/cart/views/logic/cart_state.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -34,7 +33,6 @@ class CartItem extends StatefulWidget {
 class _CartItemState extends State<CartItem> {
   @override
   Widget build(BuildContext context ) {
-    final state = CartState();
     return Card(
       color: Colors.white,
       child: Padding(
@@ -49,14 +47,14 @@ class _CartItemState extends State<CartItem> {
                   Skeleton.replace(
                       width: 100,
                       height: 100,
-                      child: Image.network(widget.image,
+                      child: CachedNetworkImage(imageUrl: widget.image,
                           width: 100,
                           height: 100,
-                          errorBuilder: (context, error, stackTrace) => Container(
+                        errorWidget    : (context, error, stackTrace) => Container(
                             color: Colors.grey.shade200,
                             child: const Icon(Icons.broken_image,
                                 color: Colors.grey),
-                          ))),
+                          ),)),
                   CustomText(
                     text: widget.text,
                     weight: FontWeight.bold,

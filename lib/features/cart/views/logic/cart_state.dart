@@ -28,6 +28,10 @@ class CartState extends Equatable{
        CartError({this.message});
     }
 
+    //gust mode
+    class CartGuest extends CartState{}
+
+
     class SaveOrderInitial extends CartState{}
     class SaveOrderLoading extends CartState{}
     class SaveOrderSuccess extends CartState{}

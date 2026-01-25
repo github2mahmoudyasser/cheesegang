@@ -88,11 +88,18 @@ class _CartViewState extends State<CartView> {
       cartData = state.currentModel?.cartData; // show old data when loading
     }
 
+    // guest mode
+    if (state is CartGuest) {
+      return _buildGuestView(context);
+    }
+
     // if cart is empty
     if (!waitingServer && cartData != null && cartData.items.isEmpty) {
       return _buildEmptyCartView(context);
     }
 
+
+    //success get cart
     if (cartData != null || waitingServer) {
       final items = (waitingServer && cartData == null)//  عملت كدا عشان المتغير دا يبقا المتحكم في الداتا لو في داتا يعرضها لو مفيش يعرض داتا وهمية
           ? List.generate(4, (index) => null) // if data = null show 4 fake item
@@ -150,6 +157,7 @@ class _CartViewState extends State<CartView> {
       );
     }
 
+      // cart error
     if (state is CartError) return _buildErrorView(context, state.message!);
     return const SizedBox.shrink();
   }
@@ -259,21 +267,25 @@ class _CartViewState extends State<CartView> {
   }
 
   Widget _buildGuestView(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.lock_outline, size: 70, color: AppColors.primary),
-            const Gap(10),
-            CustomText(text: "Please login to see your cart", size: 18, weight: FontWeight.bold),
-            const Gap(30),
-            CustomAuthButton(
-              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const LoginView())),
-              text: "Login Now",
-              color: AppColors.primary,
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock_outline, size: 70, color: AppColors.primary),
+              const Gap(10),
+              CustomText(text: "Please login to see your cart", size: 18, weight: FontWeight.bold),
+              const Gap(30),
+              CustomAuthButton(
+                onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const LoginView())),
+                text: "Login Now",
+                color: AppColors.primary,
+              ),
+            ],
+          ),
         ),
       ),
     );

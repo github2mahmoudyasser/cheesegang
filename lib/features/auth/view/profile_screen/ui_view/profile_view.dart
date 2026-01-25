@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:cheesegang/core/utils/pref_helper.dart';
+import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
+import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/shared/widgets/error_screen.dart';
 import 'package:cheesegang/features/auth/widgets/profiletxt_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,6 +54,8 @@ class _ProfileViewState extends State<ProfileView> {
         _address.text =state.userModel?.address?? "";
         _visa.text = state.userModel?.visa??"";
       }
+
+
       //  error when failed data
       else if (state is ProfileFailure) {
         ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message??"SomeThing, went wrong"));
@@ -62,22 +67,27 @@ class _ProfileViewState extends State<ProfileView> {
     },
     builder: (context,state) {
       final profileCubit = context.read<ProfileCubit>();
+      final user = profileCubit.userModel;
+
       bool isLoading = state is ProfileLoading;
 
 
 
+
         //bad connection
-      if (state is ProfileFailure && profileCubit.userModel == null) {
+      if (state is ProfileFailure ) {
         return ErrorScreen(
-          text: state.message ?? "Check your internet, or try login again",
+          text:  "Check your internet",
           buttonText: "Retry Now",
           onTap: () => profileCubit.getProfileData(),
-          logButtonText: "Login again",
-          log: (){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (e)=>LoginView()));
-          }
+
         );
       }
+      // guest mode
+      if (state is ProfileGuest) {
+        return _buildGuestView(context);
+      }
+
 
 
       // main profile Screen
@@ -110,13 +120,14 @@ class _ProfileViewState extends State<ProfileView> {
                     children: [
                       Center(
                         child: Container(
-                          height: 120, width: 120,
+                          height: 120,
+                          width: 120,
                           decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.shade300),
                           clipBehavior: Clip.antiAlias,
                           child: profileCubit.selectImage != null
                               ? Image.file(File(profileCubit.selectImage!), fit: BoxFit.cover)
-                              : (profileCubit.userModel?.image != null)
-                              ? Image.network(profileCubit.userModel!.image!, fit: BoxFit.cover)
+                               :(profileCubit.localImage !=null)
+                              ? Image.file(File(profileCubit.localImage!), fit: BoxFit.cover)
                               : const Icon(Icons.person, size: 50),
                         ),
                       ),
@@ -166,7 +177,12 @@ class _ProfileViewState extends State<ProfileView> {
                             text: "Log Out",
                             icon: Icons.logout,
                             loading: state is LogOutLoading,
-                            onTap: () => profileCubit.logOut(),
+                            onTap: ()async {
+                              await profileCubit.logOut();
+                              if (!context.mounted) return;
+                              context.read<HomeCubit>().clearHomeData();
+                              context.read<CartCubit>().clearCartData();
+                            }
                           ),
                         ],
                       ),
@@ -196,6 +212,36 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  Widget _buildGuestView(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, centerTitle: true, title: const Text("Profile")),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.account_circle_outlined, size: 120, color: AppColors.primary.withOpacity(0.5)),
+              const Gap(20),
+              CustomText(text: "You are browsing as a Guest", size: 20, color: Colors.black),
+              const Gap(10),
+              const Text("Login now to see your profile and track orders", textAlign: TextAlign.center),
+              const Gap(30),
+              _actionButton(
+                text: "Login / Sign Up",
+                icon: Icons.login,
+                loading: false,
+                onTap: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (e) => const LoginView()));
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
     /* return Scaffold(
         appBar: AppBar(

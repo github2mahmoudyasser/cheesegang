@@ -90,15 +90,10 @@ class _HomeViewState extends State<HomeView> {
                             height: 60,
                             fit: BoxFit.cover,
                           )
-                              : (user?.image != null && user!.image!.isNotEmpty)
-                          // 2. صورة من السيرفر
-                              ? Image.network(
-                            user.image!,
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.person, size: 40),
+                           : (profileCubit.localImage != null)
+                              ? Image.file(
+                            File(profileCubit.localImage!),
+                            width: 60, height: 60, fit: BoxFit.cover,
                           )
                           // 3. أيقونة افتراضية
                               : const Icon(Icons.person, size: 40, color: Colors.grey),
