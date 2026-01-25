@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../shared/widgets/costum_snakebar.dart';
+import '../../Root/logic/root_cubit.dart';
 import '../../cart/views/logic/cart_state.dart';
 
  class CheckoutView extends StatefulWidget {
@@ -39,10 +40,10 @@ import '../../cart/views/logic/cart_state.dart';
    Widget build(BuildContext context) {
      return BlocConsumer<CheckoutCubit,CheckoutState>(
        listener: (context,state){
-         if (state is SaveOrderSuccess) {
+         if (state is CheckoutSuccess) {
            _showOrderDonePopup(context); // نفتح الديالوج هنا مش في الـ onTap
          }
-         if (state is SaveOrderFailure) {
+         if (state is CheckoutFailure) {
            ScaffoldMessenger.of(context).showSnackBar(customSnack(state.toString()));
          }
        },
@@ -170,7 +171,8 @@ import '../../cart/views/logic/cart_state.dart';
    // success dialog
 // success dialog
    Widget _successDialog(BuildContext context, CheckoutState state) {
-     bool isLoading = state is SaveOrderLoading;
+     bool isLoading = state is CheckoutLoading;
+
 
      return GestureDetector(
        onTap:isLoading ?null:(){
@@ -198,7 +200,7 @@ import '../../cart/views/logic/cart_state.dart';
          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
          decoration: BoxDecoration(
            borderRadius: BorderRadius.circular(15),
-           color: isLoading ? Colors.grey : AppColors.primary,
+           color:  AppColors.primary,
          ),
          child: Center(
            child: isLoading
@@ -236,10 +238,8 @@ import '../../cart/views/logic/cart_state.dart';
                GestureDetector(
                  onTap: () {
                    Navigator.pop(context);
-                   Navigator.pushReplacement(
-                       context,
-                       MaterialPageRoute(builder: (context) => const OrderHistoryView())
-                   );
+                   Navigator.pop(context);
+                   context.read<RootCubit>().changeScreen(3);
                  },
                  child: Container(
                    width: 200,
