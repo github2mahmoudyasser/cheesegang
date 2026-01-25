@@ -5,6 +5,7 @@
 
             import 'package:cheesegang/features/auth/data/user_model.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
+import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
             import '../../features/home/data/models/product_model.dart'; // تأكد من المسار صح
@@ -14,6 +15,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
               static const String _productsBoxName = "productsBox";
               static const String _toppingsBox = "toppingsBox";
               static const String _cartBox = "cartBox";
+              static const String _orderHisBox = "orderHisBox";
               static const String _userDataBox ="userData";
               static const String _tokenKey = "auth_token";
 
@@ -88,6 +90,25 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
                 return box.get("current_cart");
 
               }
+
+              // orderHis box
+              // put data in box
+               static Future<void> cachedOrderHis(OrderHisModel orderHisModel)async{
+                 final box =await _getBox<OrderHisModel>(_orderHisBox);
+                 await box.clear();
+                 await box.put("current_orders", orderHisModel);
+               }
+
+               // get data from box
+               static Future<OrderHisModel?> getCachedOrders()async{
+                final box = await _getBox<OrderHisModel>(_orderHisBox);
+                return box.get("current_orders");
+               }
+
+
+
+
+
 
                // put user data in cached
                 static Future<void> cachedUserData(UserModel userModel)async{
