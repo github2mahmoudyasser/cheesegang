@@ -5,9 +5,7 @@ import 'package:cheesegang/features/auth/data/user_model.dart';
 import 'package:cheesegang/features/checkout/data/checkout_model.dart';
 import 'package:cheesegang/features/checkout/data/checkout_repo.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_state.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../core/network/api_error.dart';
 
 class CheckoutCubit extends Cubit<CheckoutState>{
@@ -27,6 +25,7 @@ class CheckoutCubit extends Cubit<CheckoutState>{
        emit(GetProfileLoading());
        try{
           final profileData = await authRepo.getProfileData();
+          userModel = profileData;
           emit(GetProfileSuccess(user: profileData!));
 
        }catch(e){

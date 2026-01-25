@@ -8,8 +8,8 @@ import '../../../core/network/api_error.dart';
 import '../../../core/network/api_exception.dart';
 
 class CheckoutRepo {
-    ApiService apiService;
-    CheckoutRepo({required this.apiService});
+   final ApiService apiService;
+    CheckoutRepo( this.apiService);
 
     //Check out
      Future<void> checkOut(CheckoutModel orderData )async{

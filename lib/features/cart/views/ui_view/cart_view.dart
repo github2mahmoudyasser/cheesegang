@@ -2,6 +2,7 @@ import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_state.dart';
 import 'package:cheesegang/features/cart/widgets/cart_item.dart';
+import 'package:cheesegang/features/checkout/views/checkout_view.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
 import 'package:cheesegang/shared/widgets/costum_snakebar.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
@@ -185,7 +186,9 @@ class _CartViewState extends State<CartView> {
           ],
         ),
         GestureDetector(
-          onTap: (){},
+          onTap: (){
+            Navigator.push(context,MaterialPageRoute(builder: (c)=>CheckoutView(totalPrice:total )));
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             decoration: BoxDecoration(

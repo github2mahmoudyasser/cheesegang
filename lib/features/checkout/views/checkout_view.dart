@@ -1,30 +1,16 @@
 
-import 'package:cheesegang/shared/widgets/costum_text.dart';
-import 'package:flutter/material.dart';
-
-class CheckoutView extends StatefulWidget {
-  const CheckoutView({super.key});
-
-  @override
-  State<CheckoutView> createState() => _CheckoutViewState();
-}
-
-class _CheckoutViewState extends State<CheckoutView> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: CustomText(text: "checkout"));
-  }
-}
 
 
 
-/*
+
+
 import 'package:cheesegang/core/constants/app_colors.dart';
+import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
+import 'package:cheesegang/features/checkout/data/checkout_model.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_cubit.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_state.dart';
 import 'package:cheesegang/features/checkout/widgets/pay_widget.dart';
-import 'package:cheesegang/features/checkout/widgets/success_dialog.dart';
 import 'package:cheesegang/features/orderHistory/views/order_history_view.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,14 +18,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../shared/widgets/costum_snakebar.dart';
-import '../../cart/data/cart_model.dart';
 import '../../cart/views/logic/cart_state.dart';
-import '../../orderHistory/data/order_model.dart';
-import '../../orderHistory/data/order_repo.dart';
 
  class CheckoutView extends StatefulWidget {
    const CheckoutView({super.key, required this.totalPrice,});
-   final String? totalPrice;
+   final double totalPrice;
 
 
    @override
@@ -68,6 +51,10 @@ import '../../orderHistory/data/order_repo.dart';
            var cubit = context.read<CheckoutCubit>();
            var user = cubit.userModel;
 
+           const double taxes  = 3.50;
+           const double fees = 40.33;
+           double totalPrice = widget.totalPrice+taxes+fees;
+
          return Scaffold(
            backgroundColor: Colors.white,
            appBar:  AppBar(
@@ -88,10 +75,11 @@ import '../../orderHistory/data/order_repo.dart';
                children: [
                  CustomText(text: "Order summary",size: 20,weight: FontWeight.w600,),
                  Gap(10),
-                 PayWidget(order:widget.totalPrice??"",
-                     taxes: "3.50",
-                     fees: "40.33",
-                     total:(double.parse(widget.totalPrice??"")+3.50+40.33).toStringAsFixed(2)
+                 PayWidget(
+                   order: widget.totalPrice.toStringAsFixed(2),
+                     taxes: taxes.toStringAsFixed(2),
+                     fees: fees.toStringAsFixed(2),
+                     total: totalPrice.toStringAsFixed(2)
                  ) ,
                  Gap(80),
                  CustomText(text: "Payment methods",size: 20,weight: FontWeight.w600,),
@@ -155,8 +143,7 @@ import '../../orderHistory/data/order_repo.dart';
                        crossAxisAlignment: CrossAxisAlignment.start,
                        children: [
                          CustomText(text: "Total",size: 20,),
-                         CustomText(text:"\$ ${(double.parse(widget.totalPrice??"")+3.50+40.33)
-                             .toStringAsFixed(2)}",
+                         CustomText(text:"\$ ${totalPrice.toStringAsFixed(2)}",
                              size:25,
                              weight: FontWeight.bold),
                        ],
@@ -186,30 +173,25 @@ import '../../orderHistory/data/order_repo.dart';
      bool isLoading = state is SaveOrderLoading;
 
      return GestureDetector(
-       onTap: isLoading ? null : () {
-         // 1. هنجيب الداتا من الـ CartCubit
-         final cartCubit = context.read<CartCubit>();
-         final itemsInCart = cartCubit.currentModel?.cartData ?? [];
+       onTap:isLoading ?null:(){
+         final cartState = context.read<CartCubit>().state;
+         if(cartState is CartSuccess) {
+           final cartItems = cartState.cartModel.cartData.items;
 
-         if (itemsInCart.isEmpty) {
-           ScaffoldMessenger.of(context).showSnackBar(customSnack("السلة فاضية!"));
-           return;
-         }
-
-         // 2. تحويل العناصر لـ OrderModel (Mapping)
-         final List<OrderModel> itemsToSend = itemsInCart.map((item) {
-           return OrderModel(
-             productId: item.productId,
-             qty: item.qty,
-             spicy: double.tryParse(item.spicy.toString()) ?? 0.0,
-             toppings: item.toppings.map((e) => e.id).toList(),
-             options: item.sideOptions.map((e) => e.id).toList(),
+           var sendOrder = CheckoutModel(
+               orders: cartItems.map((items) =>
+                   OrderItem(
+                       productId: items.productId,
+                       qty: items.qty,
+                       spicy: 0.1,
+                       toppings: items.toppings.map((e) => e.id).toList(),
+                       options: items.sideOptions.map((e) => e.id).toList()
+                   )).toList()
            );
-         }).toList();
-
-         // 3. إنشاء الطلب وإرساله
-         final request = OrderRequestModel(items: itemsToSend);
-         context.read<CheckoutCubit>().confirmOrder(request);
+           context.read<CheckoutCubit>().confirmOrder(sendOrder);
+         }else{
+           ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed to confirm order!"));
+         }
        },
        child: Container(
          width: 120,
@@ -253,9 +235,7 @@ import '../../orderHistory/data/order_repo.dart';
                const Gap(30),
                GestureDetector(
                  onTap: () {
-                   // أهم خطوة: تصفير السلة والذهاب للهيستوري
-                   context.read<CartCubit>().getCart(); // تحديث السلة (هترجع فاضية)
-                   Navigator.pop(context); // قفل الديالوج
+                   Navigator.pop(context);
                    Navigator.pushReplacement(
                        context,
                        MaterialPageRoute(builder: (context) => const OrderHistoryView())
@@ -278,7 +258,7 @@ import '../../orderHistory/data/order_repo.dart';
      );
    }
  }
- */
+
 
 
 

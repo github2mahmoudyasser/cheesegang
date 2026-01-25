@@ -5,6 +5,8 @@ import 'package:cheesegang/features/auth/view/profile_screen/logic/profile_cubit
 import 'package:cheesegang/features/auth/view/sign_screen/logic/signup_cubit.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
+import 'package:cheesegang/features/checkout/data/checkout_repo.dart';
+import 'package:cheesegang/features/checkout/views/logic/checkout_cubit.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
@@ -52,6 +54,7 @@ void main() async {
   final toppingRepo  = DetailsRepo(apiService);
    final productRepo = ProductRepo(apiService);
    final cartRepo = CartRepo(apiService);
+   final checkOutRepo = CheckoutRepo(apiService);
 
 
 
@@ -62,6 +65,7 @@ void main() async {
         RepositoryProvider.value(value: productRepo),
         RepositoryProvider.value(value: toppingRepo),
         RepositoryProvider.value(value: cartRepo),
+        RepositoryProvider.value(value: checkOutRepo)
       ],
       child: MultiBlocProvider(
           providers: [
@@ -72,7 +76,8 @@ void main() async {
             BlocProvider(create: (context)=>RootCubit(),),
             BlocProvider(create: (context)=>HomeCubit(RepositoryProvider.of<ProductRepo>(context)),),
             BlocProvider(create: (context)=>ProductDetailsCubit(RepositoryProvider.of<DetailsRepo>(context),RepositoryProvider.of<CartRepo>(context)),),
-           BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context), RepositoryProvider.of<AuthRepo>(context)),)
+           BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context), RepositoryProvider.of<AuthRepo>(context)),),
+            BlocProvider(create: (context)=>CheckoutCubit(RepositoryProvider.of<AuthRepo>(context),RepositoryProvider.of<CheckoutRepo>(context)),),
             //BlocProvider(create: (context)=>FavCubit(RepositoryProvider.of<FavRepo>(context)),),
           //  BlocProvider(create: (context)=>OrderHisCubit(RepositoryProvider.of<OrderHisRepo>(context)),),
           ],
