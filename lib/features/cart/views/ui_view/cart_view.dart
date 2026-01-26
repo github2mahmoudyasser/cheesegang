@@ -6,7 +6,6 @@ import 'package:cheesegang/features/checkout/views/checkout_view.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
 import 'package:cheesegang/shared/widgets/costum_snakebar.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -46,10 +45,7 @@ class _CartViewState extends State<CartView> {
           context.read<CartCubit>().getCart();
         }
 
-        // checkout state
-        if(state is SaveOrderSuccess){
-          ScaffoldMessenger.of(context).showSnackBar(customSnack("Check Out Success"));
-        }
+
 
        //cart error
         if (state is CartError) {
@@ -62,10 +58,6 @@ class _CartViewState extends State<CartView> {
            ScaffoldMessenger.of(context).showSnackBar(customSnack("please, try again"));
          }
 
-
-        if(state is SaveOrderFailure){
-          ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
-        }
       },
       builder: (context, state) {
         if (isGuest) {
@@ -195,14 +187,7 @@ class _CartViewState extends State<CartView> {
               borderRadius: BorderRadius.circular(15),
               color: AppColors.primary,
             ),
-            child: state is SaveOrderLoading
-                ?Row(
-              children: [
-                CustomText(text: "Check Out", color: Colors.white),
-                CupertinoActivityIndicator()
-              ],
-            )
-                :CustomText(text: "Check Out", color: Colors.white),
+            child: CustomText(text: "Check Out", color: Colors.white),
           ),
         ),
       ],

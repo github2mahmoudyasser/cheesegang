@@ -5,6 +5,7 @@
 
             import 'package:cheesegang/features/auth/data/user_model.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
+import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
             import '../../features/home/data/models/product_model.dart'; // تأكد من المسار صح
@@ -14,8 +15,10 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
               static const String _productsBoxName = "productsBox";
               static const String _toppingsBox = "toppingsBox";
               static const String _cartBox = "cartBox";
+              static const String _orderHisBox = "orderHisBox";
               static const String _userDataBox ="userData";
               static const String _tokenKey = "auth_token";
+              static const String _blackListBox = "delete_orders_his";
 
                // <T> this mean that function is generic that's mean this box contain String:(token) or products model
                // open the box
@@ -88,6 +91,44 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
                 return box.get("current_cart");
 
               }
+
+              // orderHis box
+              // put data in box
+               static Future<void> cachedOrderHis(OrderHisModel orderHisModel)async{
+                 final box =await _getBox<OrderHisModel>(_orderHisBox);
+                 await box.clear();
+                 await box.put("current_orders", orderHisModel);
+               }
+
+               // get data from box
+               static Future<OrderHisModel?> getCachedOrders()async{
+                final box = await _getBox<OrderHisModel>(_orderHisBox);
+                return box.get("current_orders");
+               }
+
+
+
+               // black list box
+
+               static Future <void> addToBlackList(int orderId)async{
+                var box = await Hive.openBox(_blackListBox);
+                await box.put(orderId,true);
+               }
+
+                // ask order del or no
+              static bool isOrderDeleted(int orderId) {
+                var box = Hive.box(_blackListBox);
+                return box.containsKey(orderId);
+              }
+
+              static List<int> getBlacklistedIds() {
+                var box = Hive.box(_blackListBox);
+                return box.keys.cast<int>().toList();
+              }
+
+
+
+
 
                // put user data in cached
                 static Future<void> cachedUserData(UserModel userModel)async{

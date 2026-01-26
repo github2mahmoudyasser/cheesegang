@@ -4,34 +4,19 @@
 import 'package:cheesegang/core/network/api_service.dart';
 import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 
-class OrderRepo{
-             ApiService apiService = ApiService();
-             
-              // Save Order
-           Future<void> saveOrder(OrderRequestModel orderData)async{
-             try{
-                final orderRequest = await apiService.post("/orders", orderData.toJson());
-                 if(orderRequest is ApiError){
-                   throw orderRequest;
-                 }
-                print("Add To Cart Success:$orderRequest");
-               
-             }catch(e){
-               throw ApiError(message: e.toString());
-             }
-             
-           }
-           
-           
+               class OrderRepo{
+             ApiService apiService;
+             OrderRepo(this.apiService);
+
              //get Order
-           Future<GetOrderModel?>  getOrderData()async{
+           Future<OrderHisModel?>  getOrderData()async{
              try{
                 final getOrderRequest = await apiService.get("/orders");
                 if(getOrderRequest is ApiError){
                   throw getOrderRequest;
 
                 }
-                  return GetOrderModel.fromJson(getOrderRequest);
+                  return OrderHisModel.fromJson(getOrderRequest);
                
              }catch(e){
                throw ApiError(message: e.toString());

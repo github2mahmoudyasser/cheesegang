@@ -1,59 +1,28 @@
 
-    //save orders
-    class OrderModel{
-          final int productId;
-          final int qty;
-          final double spicy;
-          final List<int> toppings;
-          final List<int> options;
 
-           OrderModel({
-             required this.productId,
-             required this.qty,
-             required this.spicy,
-             required this.toppings,
-             required this.options
-
-    });
-            Map<String,dynamic> toJson()=>{
-              "product_id":productId,
-              "quantity":qty,
-              "spicy":spicy,
-              "toppings":toppings,
-              "side_options":options,
-
-            };
-
-}
-   class OrderRequestModel{
-     final List<OrderModel> items;
-
-      OrderRequestModel({
-        required this.items
-
-   });
-       Map<String,dynamic> toJson()=>{
-         "items":items.map((e)=>e.toJson()).toList()
-       };
-   }
-
-
-      //get orders
-
-      class GetOrderModel{
+import 'package:hive_ce/hive.dart';
+part 'order_model.g.dart';
+      //get orderHis
+    @HiveType(typeId: 8)
+      class OrderHisModel{
+      @HiveField(0)
           final int code;
-          final String message;
-          final List<OrderData> order;
+
+      @HiveField(1)
+      final String message;
+
+      @HiveField(2)
+      final List<OrderData> order;
 
 
-          GetOrderModel({
+          OrderHisModel({
             required this.code,
             required this.message,
             required this.order,
       });
 
-           factory GetOrderModel.fromJson(Map<String,dynamic>json){
-             return GetOrderModel(
+           factory OrderHisModel.fromJson(Map<String,dynamic>json){
+             return OrderHisModel(
                  code: json["code"]??200,
                  message: json["message"]?.toString()??"",
                  order: (json["data"] as List)
@@ -63,11 +32,21 @@
 
            }
       }
+      @HiveType(typeId: 9)
       class OrderData{
+        @HiveField(0)
         final int id;
+
+        @HiveField(1)
         final String status;
+
+        @HiveField(2)
         final String totalPrice;
+
+        @HiveField(3)
         final String createdAt;
+
+        @HiveField(4)
         final String productImage;
 
         OrderData({

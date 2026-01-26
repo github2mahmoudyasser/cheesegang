@@ -31,17 +31,6 @@ class CartState extends Equatable{
     //gust mode
     class CartGuest extends CartState{}
 
-
-    class SaveOrderInitial extends CartState{}
-    class SaveOrderLoading extends CartState{}
-    class SaveOrderSuccess extends CartState{}
-    class SaveOrderFailure extends CartState{
-     final String message;
-     SaveOrderFailure({required this.message});
-     @override
-     List<Object?> get props => [message];
-    }
-
     class DeleteLoading extends CartState{
      final int itemId;
      DeleteLoading({required this.itemId});
