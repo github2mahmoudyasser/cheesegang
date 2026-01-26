@@ -48,6 +48,21 @@ class ProductRepo {
       throw ApiError(message: "Server is waking up, please try again.");
     }
   }
+
+
+   // add favourites
+  Future<void> addFavourites(FavouritesModel fav)async{
+    try{
+       final addFavRequest = await apiService.post("/toggle-favorite", fav.toJson());
+        if(addFavRequest is ApiError){
+          throw addFavRequest;
+        }
+    }on DioException catch(e){
+      throw ApiExceptions.handleError(e);
+    }catch(e){
+      throw ApiError(message: e.toString());
+    }
+  }
 }
 
 
