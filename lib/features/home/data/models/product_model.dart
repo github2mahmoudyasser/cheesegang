@@ -51,6 +51,18 @@ part 'product_model.g.dart';
 
  }
 
+// favouritesModel
+class FavouritesModel{
+  final int productId;
+
+  FavouritesModel({
+    required this.productId
+  });
+  Map<String,dynamic> toJson()=>{
+    "product_id":productId
+  };
+}
+
 
 
 
