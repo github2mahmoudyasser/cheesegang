@@ -14,6 +14,8 @@ class HomeCubit extends Cubit<HomeState> {
 
    List<ProductModel> _allProducts = [];
 
+   Set<int> favId = {}; // fast search in list by productId O(1)
+
  // reset home data
   void clearHomeData() {
     emit(ProductInitial());
@@ -90,6 +92,15 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
 
+  }
+
+   void toggleFav(int productId){
+      if(favId.contains(productId)){
+        favId.remove(productId);
+      }else{
+        favId.add(productId);
+      }
+      emit(ProductSuccess(products: _allProducts, isOffline: false));
   }
 
 }

@@ -13,8 +13,11 @@ class CardItem extends StatelessWidget {
      required this.image,
      required this.text,
      required this.desc,
-     required this.rate});
+     required this.rate,
+    required this.onTap});
   final String image, text, desc, rate;
+  final Function() onTap;
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,12 @@ class CardItem extends StatelessWidget {
                   size: 12,
                 color: Colors.black,),
                 Spacer(),
-                Icon(CupertinoIcons.heart,color: AppColors.primary,size: 20,)
+                GestureDetector(
+                  onTap:onTap ,
+                    child:
+                    Icon(
+                      CupertinoIcons.heart,
+                      color: AppColors.primary,size: 20,))
               ],
             )
           ],

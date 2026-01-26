@@ -40,3 +40,9 @@ abstract class HomeState extends Equatable { // use equatable to stop unnecessar
       @override
       List<Object?> get props => [message];
      }
+
+     // toggle fav
+      class ToggleFav extends HomeState{
+       final int selectIndex;
+       ToggleFav({required this.selectIndex});
+      }

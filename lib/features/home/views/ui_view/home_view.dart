@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cheesegang/core/constants/app_colors.dart';
+import 'package:cheesegang/features/Root/logic/root_cubit.dart';
 import 'package:cheesegang/features/product/views/ui_view/product_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -179,6 +180,15 @@ class _HomeViewState extends State<HomeView> {
                     if (state is ProductFailure) {
                       ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
                     }
+
+                    if(state is AddFavFailure){
+                      ScaffoldMessenger.of(context).showSnackBar(customSnack("Added to favourite list"));
+                    }
+                    else if(state is AddFavFailure){
+                      ScaffoldMessenger.of(context).showSnackBar(customSnack(" Failed to added to favourite list, please try again"));
+
+                    }
+
                   },
                   builder: (context, state) {
                     bool isError = state is ProductFailure;
@@ -255,6 +265,11 @@ class _HomeViewState extends State<HomeView> {
                                            productPrice: product.price,)));
                                        },
                                        child: CardItem(
+                                         onTap: (){
+                                           context.read<HomeCubit>().addFavProducts(productId: product.id);
+                                           Navigator.pop(context);
+                                           context.read<RootCubit>().changeScreen(2);
+                                         },
                                          //  i use product here because when data is load this variable will show fake data it help me stop crash when load data
                                          image: product.image,
                                          text: product.name,
