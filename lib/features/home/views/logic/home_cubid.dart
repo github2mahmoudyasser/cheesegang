@@ -11,6 +11,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit(this.productRepo) : super(ProductInitial());
 
+   List<ProductModel> _allProducts = [];
 
  // reset home data
   void clearHomeData() {
@@ -24,6 +25,7 @@ class HomeCubit extends Cubit<HomeState> {
       final productData = await productRepo.getProducts();
 
       if (productData.isNotEmpty) {
+        _allProducts = productData; //save data in this var i will use it in search
         // get data from Api or cached
         emit(ProductSuccess(products: productData, isOffline: false));
       } else {
@@ -38,6 +40,33 @@ class HomeCubit extends Cubit<HomeState> {
       emit(ProductFailure(message: errorMessage));
     }
   }
+
+
+
+  // search
+
+  void search(String text){
+    final filterProducts = _allProducts
+   . where((p)=> p.name.toLowerCase().contains(text.toLowerCase()))
+        .toList();  // pick product by letters
+    emit(ProductSuccess(products: filterProducts, isOffline: false));
+  }
+  
+  // filter category
+   void filterCategory(String categoryName){
+    if(categoryName =="All"){
+      emit(ProductSuccess(products: _allProducts, isOffline: false));
+      
+    }else{
+      final filterCategory = _allProducts
+          .where((p)=>p.name.toLowerCase().contains(categoryName.toLowerCase()))
+          .toList();
+      emit(ProductSuccess(products: filterCategory, isOffline: false));
+      
+    }
+   }
+
 }
+
 
 
