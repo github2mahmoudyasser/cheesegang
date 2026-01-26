@@ -58,18 +58,21 @@ class OrdersCard extends StatelessWidget {
 
             ),
             Gap(15),
-            Container(
-              width: 250,
-              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: AppColors.primary,
-              ),
-              child: GestureDetector(
-                onTap: onDelete,
-                child: Center(
-                  child: CustomText(text: "Remove from History",
-                    color: Colors.white,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 250,
+                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: AppColors.primary,
+                ),
+                child: GestureDetector(
+                  onTap: onDelete,
+                  child: Center(
+                    child: CustomText(text: "Remove from History",
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

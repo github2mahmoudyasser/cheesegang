@@ -51,6 +51,7 @@ void main() async {
   await Hive.openBox<DetailsModel>('toppingsBox'); // Initialization box when open app
   await Hive.openBox<GetCartModel>("cartBox");
    await Hive.openBox<OrderHisModel>("orderHisBox");
+   await Hive.openBox("delete_orders_his");
   await Hive.openBox<UserModel>("userData");
   await Hive.openBox("userBox");// open the box fast to get token and image and userData
 

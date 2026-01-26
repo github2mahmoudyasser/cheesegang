@@ -26,6 +26,8 @@ class OrderCubit extends Cubit<OrderState>{
     try{
       final orderData = await orderRepo.getOrderData();
       if(orderData!=null){
+        // remove delete items when get data
+        orderData.order.removeWhere((order) => PrefHelper.isOrderDeleted(order.id));
         orderHisModel = orderData;
         emit(OrderSuccess(orderHisModel: orderData));
       }
@@ -34,6 +36,7 @@ class OrderCubit extends Cubit<OrderState>{
       if (orderHisModel == null) {
         emit( OrderError(message: "Check your internet connection"));
       } else {
+        orderHisModel!.order.removeWhere((order) => PrefHelper.isOrderDeleted(order.id));
         emit(OrderSuccess(orderHisModel: orderHisModel));
       }
     }
@@ -45,7 +48,11 @@ class OrderCubit extends Cubit<OrderState>{
     emit(DeleteOrderLoad(itemId: orderId));
     try{
       if(orderHisModel!=null&& orderHisModel?.order!=null) {
+
+     await PrefHelper.addToBlackList(orderId);// add delete item at black list
+
      orderHisModel!.order.removeWhere((item)=>item.id==orderId); // delete order from list by id
+
      await PrefHelper.cachedOrderHis(orderHisModel!); // save new data in cach
      emit(OrderSuccess(orderHisModel: orderHisModel)); // sent new state for new data
       }
