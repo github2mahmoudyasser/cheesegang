@@ -26,7 +26,7 @@ class _HomeViewState extends State<HomeView> {
   final TextEditingController searchController = TextEditingController();
 
 
-  final List<String> category = ["All", "Combo", "Sliders", "Classic"];
+  final List<String> category = ["All", "Combo", "Classic"];
   int selectIndex = 0;
 
   @override
@@ -135,7 +135,10 @@ class _HomeViewState extends State<HomeView> {
                         child: Row(
                           children: List.generate(category.length, (index) {
                             return GestureDetector(
-                              onTap: () => setState(() => selectIndex = index),
+                              onTap: () {
+                                setState(() => selectIndex = index);
+                                context.read<HomeCubit>(). filterCategory(category[index]);
+                              } ,
                               child: Container(
                                 margin: const EdgeInsets.only(right: 8),
                                 decoration: BoxDecoration(

@@ -48,12 +48,11 @@ class HomeCubit extends Cubit<HomeState> {
   void search(String text){
     final filterProducts = _allProducts
    . where((p)=> p.name.toLowerCase().contains(text.toLowerCase()))
-        .toList();
+        .toList();  // pick product by letters
     emit(ProductSuccess(products: filterProducts, isOffline: false));
   }
   
   // filter category
-
    void filterCategory(String categoryName){
     if(categoryName =="All"){
       emit(ProductSuccess(products: _allProducts, isOffline: false));
