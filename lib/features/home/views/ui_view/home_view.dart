@@ -113,6 +113,9 @@ class _HomeViewState extends State<HomeView> {
                     elevation: 2,
                     borderRadius: BorderRadius.circular(15),
                     child: SearchField(
+                      onChanged: (v){
+                        context.read<HomeCubit>().search(v);
+                      },
                       controller: controller,
                     ),
                   ),
