@@ -51,6 +51,21 @@ class HomeCubit extends Cubit<HomeState> {
         .toList();
     emit(ProductSuccess(products: filterProducts, isOffline: false));
   }
+  
+  // filter category
+
+   void filterCategory(String categoryName){
+    if(categoryName =="All"){
+      emit(ProductSuccess(products: _allProducts, isOffline: false));
+      
+    }else{
+      final filterCategory = _allProducts
+          .where((p)=>p.name.toLowerCase().contains(categoryName.toLowerCase()))
+          .toList();
+      emit(ProductSuccess(products: filterCategory, isOffline: false));
+      
+    }
+   }
 
 }
 
