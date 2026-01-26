@@ -9,13 +9,11 @@ class OrdersCard extends StatelessWidget {
   const OrdersCard({super.key,
     required this.orderId,
     required this.price,
-    required this.qty,
     required this.image, required this.time, this.onDelete});
 
    final String image;
   final int orderId;
-  final int price;
-  final int qty;
+  final String price;
   final String time;
   final Function()? onDelete;
 
