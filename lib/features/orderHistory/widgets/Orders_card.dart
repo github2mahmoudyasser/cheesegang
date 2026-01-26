@@ -10,13 +10,14 @@ class OrdersCard extends StatelessWidget {
     required this.orderId,
     required this.price,
     required this.qty,
-    required this.image, required this.time});
+    required this.image, required this.time, this.onDelete});
 
    final String image;
   final int orderId;
   final int price;
   final int qty;
   final String time;
+  final Function()? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,7 @@ class OrdersCard extends StatelessWidget {
                 color: AppColors.primary,
               ),
               child: GestureDetector(
-                onTap: () {},
+                onTap: onDelete,
                 child: Center(
                   child: CustomText(text: "Remove from History",
                     color: Colors.white,

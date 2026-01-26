@@ -1,8 +1,6 @@
 
 
-import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:equatable/equatable.dart';
-
 import '../../data/order_model.dart';
 
 class OrderState extends Equatable{
