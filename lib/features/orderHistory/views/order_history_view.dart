@@ -86,7 +86,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
     final List<dynamic> items = (waitingServer && orderData.isEmpty)
         ? List.generate(4, (index) => null)
         : orderData;
-    if (items .isNotEmpty || waitingServer) {
+    if (  waitingServer||items .isNotEmpty ) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Skeletonizer(
@@ -114,9 +114,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
                       }
 
                       return OrdersCard(
-                        onDelete: (){
-                          context.read<OrderCubit>().deleteOrderHis(item.id);
-                        },
+                        onDelete: ()=> context.read<OrderCubit>().deleteOrderHis(item.id),
                           orderId:item. id,
                           price:item. totalPrice,
                           image: item.productImage,
@@ -141,7 +139,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
   Widget _buildEmptyOrderHisView(BuildContext context) {
     return RefreshIndicator(
       onRefresh:()async{
-        await context.read<CartCubit>().getCart();
+        await context.read<OrderCubit>().getOrderHis();
 
       },
       child: CustomScrollView(
@@ -159,7 +157,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
                     weight:  FontWeight.bold,
                   ),
                   const Gap(20),
-                  TextButton.icon(onPressed: ()=>context.read<CartCubit>().getCart(),
+                  TextButton.icon(onPressed: ()=>context.read<OrderCubit>().getOrderHis(),
                     icon: const Icon(Icons.refresh),
                     label: const Text("Try Refresh"),)
                 ],
@@ -186,7 +184,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
             CustomText(text: message, size: 18, weight: FontWeight.bold),
             const Gap(30),
             CustomAuthButton(
-              onTap: () => context.read<CartCubit>().getCart(),
+              onTap: () => context.read<OrderCubit>().getOrderHis(),
               text: "Try Refresh",
               color: AppColors.primary,
             ),
@@ -207,7 +205,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
             children: [
               Icon(Icons.lock_outline, size: 70, color: AppColors.primary),
               const Gap(10),
-              CustomText(text: "Please login to see your cart", size: 18, weight: FontWeight.bold),
+              CustomText(text: "Please login to see your orders", size: 18, weight: FontWeight.bold),
               const Gap(30),
               CustomAuthButton(
                 onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const LoginView())),

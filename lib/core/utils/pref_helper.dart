@@ -18,6 +18,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
               static const String _orderHisBox = "orderHisBox";
               static const String _userDataBox ="userData";
               static const String _tokenKey = "auth_token";
+              static const String _blackListBox = "delete_orders_his";
 
                // <T> this mean that function is generic that's mean this box contain String:(token) or products model
                // open the box
@@ -105,6 +106,25 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
                 return box.get("current_orders");
                }
 
+
+
+               // black list box
+
+               static Future <void> addToBlackList(int orderId)async{
+                var box = await Hive.openBox(_blackListBox);
+                await box.put(orderId,true);
+               }
+
+                // ask order del or no
+              static bool isOrderDeleted(int orderId) {
+                var box = Hive.box(_blackListBox);
+                return box.containsKey(orderId);
+              }
+
+              static List<int> getBlacklistedIds() {
+                var box = Hive.box(_blackListBox);
+                return box.keys.cast<int>().toList();
+              }
 
 
 

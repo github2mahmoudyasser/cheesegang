@@ -1,11 +1,10 @@
 
 
 
-      import 'package:cheesegang/core/utils/pref_helper.dart';
+import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:cheesegang/features/orderHistory/views/logic/order_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../data/order_repo.dart';
 
 class OrderCubit extends Cubit<OrderState>{
@@ -43,6 +42,20 @@ class OrderCubit extends Cubit<OrderState>{
    }
 
      void deleteOrderHis(int orderId)async{
+    emit(DeleteOrderLoad(itemId: orderId));
+    try{
+      if(orderHisModel!=null&& orderHisModel?.order!=null) {
+     orderHisModel!.order.removeWhere((item)=>item.id==orderId); // delete order from list by id
+     await PrefHelper.cachedOrderHis(orderHisModel!); // save new data in cach
+     emit(OrderSuccess(orderHisModel: orderHisModel)); // sent new state for new data
+      }
+    }catch (e) {
+      await getOrderHis() ;// get  data if failed to delete and give me msg
+      emit(OrderError(message: "Failed to delete this item!"));
+    }
+
+
+
      if(state is OrderSuccess){
         final currentOrder = (state as OrderSuccess).orderHisModel;  // if state success
        

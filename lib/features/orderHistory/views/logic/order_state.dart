@@ -26,9 +26,19 @@ class OrderSuccess extends OrderState {
 class OrderError extends OrderState{
   final String? message;
   OrderError({this.message});
+  @override
+  List<Object?> get props => [message];
 }
 
 //gust mode
 class OrderGuest extends OrderState{}
+
+ class DeleteOrderLoad extends OrderState{
+  final int? itemId;
+  DeleteOrderLoad({this.itemId});
+  @override
+  List<Object?> get props => [itemId];
+ }
+
 
 
