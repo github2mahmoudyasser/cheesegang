@@ -24,3 +24,19 @@ abstract class HomeState extends Equatable { // use equatable to stop unnecessar
       @override
       List<Object?> get props => [message];
    }
+
+
+   // add fav states
+     class AddFavSuccess extends HomeState{
+      final FavouritesModel favouritesModel;
+      AddFavSuccess({required this.favouritesModel});
+      @override
+      List<Object?> get props => [favouritesModel];
+     }
+
+     class AddFavFailure extends HomeState{
+      final String message;
+      AddFavFailure({required this.message});
+      @override
+      List<Object?> get props => [message];
+     }

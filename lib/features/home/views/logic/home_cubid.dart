@@ -1,5 +1,6 @@
 
 
+import 'package:cheesegang/core/network/api_error.dart';
 import 'package:cheesegang/core/network/api_exception.dart';
 import 'package:cheesegang/features/home/data/models/product_model.dart';
 import 'package:cheesegang/features/home/data/repo/product_repo.dart';
@@ -65,6 +66,31 @@ class HomeCubit extends Cubit<HomeState> {
       
     }
    }
+
+
+
+   // add Fav products
+  Future<void> addFavProducts({
+    required int productId
+})async{
+    try{
+      final favModel = FavouritesModel(
+          productId: productId
+      );
+      await productRepo.addFavourites(favModel);
+      emit(AddFavSuccess(favouritesModel: favModel));
+      emit(ProductSuccess(products: _allProducts, isOffline: false));
+    }catch(e){
+      String msg = "Failed to add this item to favourites";
+      if(e is ApiError){
+        msg = e.toString();
+      }
+      emit(AddFavFailure(message: msg));
+      emit(ProductSuccess(products: _allProducts, isOffline: false)); // reset data when failed to add fav
+    }
+
+
+  }
 
 }
 
