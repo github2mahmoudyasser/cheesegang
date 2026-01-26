@@ -9,6 +9,8 @@ import 'package:cheesegang/features/checkout/data/checkout_repo.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_cubit.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/features/orderHistory/data/order_model.dart';
+import 'package:cheesegang/features/orderHistory/data/order_repo.dart';
+import 'package:cheesegang/features/orderHistory/views/logic/order_cubit.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_cubit.dart';
@@ -59,6 +61,7 @@ void main() async {
    final productRepo = ProductRepo(apiService);
    final cartRepo = CartRepo(apiService);
    final checkOutRepo = CheckoutRepo(apiService);
+   final orderHisRepo = OrderRepo(apiService);
 
 
 
@@ -69,7 +72,8 @@ void main() async {
         RepositoryProvider.value(value: productRepo),
         RepositoryProvider.value(value: toppingRepo),
         RepositoryProvider.value(value: cartRepo),
-        RepositoryProvider.value(value: checkOutRepo)
+        RepositoryProvider.value(value: checkOutRepo),
+        RepositoryProvider.value(value: orderHisRepo)
       ],
       child: MultiBlocProvider(
           providers: [
@@ -82,8 +86,8 @@ void main() async {
             BlocProvider(create: (context)=>ProductDetailsCubit(RepositoryProvider.of<DetailsRepo>(context),RepositoryProvider.of<CartRepo>(context)),),
            BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context), RepositoryProvider.of<AuthRepo>(context)),),
             BlocProvider(create: (context)=>CheckoutCubit(RepositoryProvider.of<AuthRepo>(context),RepositoryProvider.of<CheckoutRepo>(context)),),
+              BlocProvider(create: (context)=>OrderCubit(RepositoryProvider.of<OrderRepo>(context)),),
             //BlocProvider(create: (context)=>FavCubit(RepositoryProvider.of<FavRepo>(context)),),
-          //  BlocProvider(create: (context)=>OrderHisCubit(RepositoryProvider.of<OrderHisRepo>(context)),),
           ],
           child: const MyApp())
     ),
