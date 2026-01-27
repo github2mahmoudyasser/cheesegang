@@ -8,6 +8,7 @@ import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/checkout/data/checkout_repo.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_cubit.dart';
 import 'package:cheesegang/features/favourites/data/favModel.dart';
+import 'package:cheesegang/features/favourites/data/favRepo.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:cheesegang/features/orderHistory/data/order_repo.dart';
@@ -23,6 +24,7 @@ import 'core/network/api_service.dart';
 import 'features/auth/data/auth_repo.dart';
 import 'features/auth/data/user_model.dart';
 import 'features/cart/data/cart_model.dart';
+import 'features/favourites/view/logic/fav_cubit.dart';
 import 'features/home/data/models/product_model.dart';
 import 'features/home/data/repo/product_repo.dart';
 import 'features/splash_screen/view/logic/splash_cubit.dart';
@@ -47,6 +49,8 @@ void main() async {
   Hive.registerAdapter(UserModelAdapter()); //TypeId 7
   Hive.registerAdapter(OrderHisModelAdapter()); // TypeId 8
   Hive.registerAdapter(OrderDataAdapter()); // TypeId 9
+ Hive.registerAdapter(FavModelAdapter());
+
 
   await Hive.openBox<ProductModel>('productsBox');
   await Hive.openBox<DetailsModel>('toppingsBox'); // Initialization box when open app
@@ -65,6 +69,7 @@ void main() async {
    final cartRepo = CartRepo(apiService);
    final checkOutRepo = CheckoutRepo(apiService);
    final orderHisRepo = OrderRepo(apiService);
+   final favRepo = FavRepo(apiService);
 
 
 
@@ -76,7 +81,8 @@ void main() async {
         RepositoryProvider.value(value: toppingRepo),
         RepositoryProvider.value(value: cartRepo),
         RepositoryProvider.value(value: checkOutRepo),
-        RepositoryProvider.value(value: orderHisRepo)
+        RepositoryProvider.value(value: orderHisRepo),
+        RepositoryProvider.value(value: favRepo)
       ],
       child: MultiBlocProvider(
           providers: [
@@ -90,7 +96,7 @@ void main() async {
            BlocProvider(create: (context)=>CartCubit(RepositoryProvider.of<CartRepo>(context) , RepositoryProvider.of<DetailsRepo>(context), RepositoryProvider.of<AuthRepo>(context)),),
             BlocProvider(create: (context)=>CheckoutCubit(RepositoryProvider.of<AuthRepo>(context),RepositoryProvider.of<CheckoutRepo>(context)),),
               BlocProvider(create: (context)=>OrderCubit(RepositoryProvider.of<OrderRepo>(context)),),
-            //BlocProvider(create: (context)=>FavCubit(RepositoryProvider.of<FavRepo>(context)),),
+            BlocProvider(create: (context)=>FavCubit(RepositoryProvider.of<FavRepo>(context)),),
           ],
           child: const MyApp())
     ),

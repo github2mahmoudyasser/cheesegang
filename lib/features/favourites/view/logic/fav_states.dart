@@ -25,3 +25,4 @@ abstract class FavStates extends Equatable {
        @override
        List<Object?> get props => [message];
      }
+     class FavGuest extends FavStates{}
