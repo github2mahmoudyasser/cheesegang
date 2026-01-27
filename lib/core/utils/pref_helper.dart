@@ -111,17 +111,16 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
                // favBox
               //put data in cached
-               static Future<void> cachedFavourites(FavouritesModel favouritesModel)async{
+               static Future<void> cachedFavourites(List<FavouritesModel> favouritesModel)async{
                 final box  = await _getBox<FavouritesModel>(_favBox);
                 await box.clear();
-                await box.put("favourites", favouritesModel);
-
+                await box.addAll(favouritesModel);
               }
 
               // get data from cached
-               static Future<FavouritesModel?> getCachedFav()async{
+               static Future<List<FavouritesModel>> getCachedFav()async{
                   final box = await _getBox<FavouritesModel>(_favBox);
-                  return box.get("favourites");
+                  return box.values.toList();
                }
 
 
