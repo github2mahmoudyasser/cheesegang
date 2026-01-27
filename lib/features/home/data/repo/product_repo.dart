@@ -51,7 +51,7 @@ class ProductRepo {
 
 
    // add favourites
-  Future<void> addFavourites(FavouritesModel fav)async{
+  Future<void> addFavourites(IsFav fav)async{
     try{
        final addFavRequest = await apiService.post("/toggle-favorite", fav.toJson());
         if(addFavRequest is ApiError){

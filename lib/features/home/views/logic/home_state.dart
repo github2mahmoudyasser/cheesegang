@@ -28,7 +28,7 @@ abstract class HomeState extends Equatable { // use equatable to stop unnecessar
 
    // add fav states
      class AddFavSuccess extends HomeState{
-      final FavouritesModel favouritesModel;
+      final IsFav favouritesModel;
       AddFavSuccess({required this.favouritesModel});
       @override
       List<Object?> get props => [favouritesModel];

@@ -51,11 +51,11 @@ part 'product_model.g.dart';
 
  }
 
-// favouritesModel
-class FavouritesModel{
+// Is Fav
+class IsFav{
   final int productId;
 
-  FavouritesModel({
+  IsFav({
     required this.productId
   });
   Map<String,dynamic> toJson()=>{

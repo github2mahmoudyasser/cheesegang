@@ -76,7 +76,7 @@ class HomeCubit extends Cubit<HomeState> {
     required int productId
 })async{
     try{
-      final favModel = FavouritesModel(
+      final favModel = IsFav(
           productId: productId
       );
       await productRepo.addFavourites(favModel);

@@ -5,6 +5,7 @@
 
             import 'package:cheesegang/features/auth/data/user_model.dart';
 import 'package:cheesegang/features/cart/data/cart_model.dart';
+import 'package:cheesegang/features/favourites/data/favModel.dart';
 import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:cheesegang/features/product/data/details_model.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
@@ -19,6 +20,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
               static const String _userDataBox ="userData";
               static const String _tokenKey = "auth_token";
               static const String _blackListBox = "delete_orders_his";
+              static const String _favBox ="favBox";
 
                // <T> this mean that function is generic that's mean this box contain String:(token) or products model
                // open the box
@@ -107,9 +109,26 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
                }
 
 
+               // favBox
+              //put data in cached
+               static Future<void> cachedFavourites(FavouritesModel favouritesModel)async{
+                final box  = await _getBox<FavouritesModel>(_favBox);
+                await box.clear();
+                await box.put("favourites", favouritesModel);
+
+              }
+
+              // get data from cached
+               static Future<FavouritesModel?> getCachedFav()async{
+                  final box = await _getBox<FavouritesModel>(_favBox);
+                  return box.get("favourites");
+               }
+
+
+
+
 
                // black list box
-
                static Future <void> addToBlackList(int orderId)async{
                 var box = await Hive.openBox(_blackListBox);
                 await box.put(orderId,true);

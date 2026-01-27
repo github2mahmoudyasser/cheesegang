@@ -5,7 +5,7 @@ import 'package:hive_ce/hive.dart';
 part 'favModel.g.dart';
 
 @HiveType(typeId: 10)
-class FavModel{
+class FavouritesModel{
  @HiveField(0)
   final int id;
 
@@ -27,7 +27,7 @@ class FavModel{
  @HiveField(6)
  final bool isFav;
 
- FavModel({
+ FavouritesModel({
    required this.id,
    required this.name,
    required this.desc,
@@ -36,8 +36,8 @@ class FavModel{
    required this.price,
    required this.isFav
 });
-  factory FavModel.fromJson(Map<String,dynamic>json){
-     return FavModel(
+  factory FavouritesModel.fromJson(Map<String,dynamic>json){
+     return FavouritesModel(
          id: json["id"],
          name: json["name"],
          desc: json["description"],

@@ -6,17 +6,17 @@ part of 'favModel.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class FavModelAdapter extends TypeAdapter<FavModel> {
+class FavModelAdapter extends TypeAdapter<FavouritesModel> {
   @override
   final typeId = 10;
 
   @override
-  FavModel read(BinaryReader reader) {
+  FavouritesModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return FavModel(
+    return FavouritesModel(
       id: (fields[0] as num).toInt(),
       name: fields[1] as String,
       desc: fields[2] as String,
@@ -28,7 +28,7 @@ class FavModelAdapter extends TypeAdapter<FavModel> {
   }
 
   @override
-  void write(BinaryWriter writer, FavModel obj) {
+  void write(BinaryWriter writer, FavouritesModel obj) {
     writer
       ..writeByte(7)
       ..writeByte(0)
