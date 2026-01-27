@@ -80,6 +80,7 @@ class HomeCubit extends Cubit<HomeState> {
           productId: productId
       );
       await productRepo.addFavourites(favModel);
+      bool isAdded = favId.contains(productId); // ask item is fav or no
       emit(AddFavSuccess(favouritesModel: favModel));
       emit(ProductSuccess(products: _allProducts, isOffline: false));
     }catch(e){

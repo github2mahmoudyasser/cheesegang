@@ -181,13 +181,21 @@ class _HomeViewState extends State<HomeView> {
                       ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
                     }
 
-                    if(state is AddFavFailure){
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack("Added to favourite list"));
+                    if (state is AddFavSuccess) {
+                      final isAdded = context.read<HomeCubit>().favId.contains(state.favouritesModel.productId); // ask cubit this id here or no
+                      String message = isAdded
+                          ? "Added to favourite list"
+                          : "Removed from favourite list";
+
+                      ScaffoldMessenger.of(context).showSnackBar(customSnack(message));
                     }
-                    else if(state is AddFavFailure){
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack(" Failed to added to favourite list, please try again"));
+
+                    if(state is AddFavFailure){
+                      ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed,try again"));
 
                     }
+
+
 
                   },
                   builder: (context, state) {
@@ -257,25 +265,25 @@ class _HomeViewState extends State<HomeView> {
                                          rate: "5")
                                          : products[index];
 
-                                     return GestureDetector(
+                                     return CardItem(
                                        onTap: (){
                                          Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductDetailsView(
                                            image: product.image,
                                            productId: product.id,
                                            productPrice: product.price,)));
                                        },
-                                       child: CardItem(
-                                         onTap: (){
-                                           context.read<HomeCubit>().addFavProducts(productId: product.id);
-                                           Navigator.pop(context);
-                                           context.read<RootCubit>().changeScreen(2);
-                                         },
-                                         //  i use product here because when data is load this variable will show fake data it help me stop crash when load data
-                                         image: product.image,
-                                         text: product.name,
-                                         desc: product.desc,
-                                         rate: product.rate,
-                                       ),
+                                       fav: (){
+                                         context.read<HomeCubit>().toggleFav(product.id);
+                                         context.read<HomeCubit>().addFavProducts(productId: product.id);
+
+                                       },
+                                       //  i use product here because when data is load this variable will show fake data it help me stop crash when load data
+                                       image: product.image,
+                                       text: product.name,
+                                       desc: product.desc,
+                                       rate: product.rate,
+                                       isFav:context.read<HomeCubit>().favId.contains(product.id),
+
                                      );
                                    },
                                    childCount: isLoading ? 6 : products.length,
