@@ -2,6 +2,7 @@
 
 import 'package:cheesegang/core/network/api_error.dart';
 import 'package:cheesegang/core/network/api_exception.dart';
+import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:cheesegang/features/home/data/models/product_model.dart';
 import 'package:cheesegang/features/home/data/repo/product_repo.dart';
 import 'package:cheesegang/features/home/views/logic/home_state.dart';
@@ -10,7 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeCubit extends Cubit<HomeState> {
   final ProductRepo productRepo;
 
-  HomeCubit(this.productRepo) : super(ProductInitial());
+  HomeCubit(this.productRepo) : super(ProductInitial()){
+    loadMyFav();
+  }
 
    List<ProductModel> _allProducts = [];
 
@@ -102,6 +105,15 @@ class HomeCubit extends Cubit<HomeState> {
         favId.add(productId);
       }
       emit(ProductSuccess(products: _allProducts, isOffline: false));
+  }
+
+
+  void loadMyFav()async{
+    final cachedFav = await PrefHelper.getCachedFav();
+    if(cachedFav.isNotEmpty){
+      favId = cachedFav.map((fav)=> fav.id).toSet();
+      emit(ProductSuccess(products: _allProducts, isOffline: false));
+    }
   }
 
 }
