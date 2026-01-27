@@ -7,6 +7,7 @@ import 'package:cheesegang/features/cart/data/cart_repo.dart';
 import 'package:cheesegang/features/cart/views/logic/cart_cubit.dart';
 import 'package:cheesegang/features/checkout/data/checkout_repo.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_cubit.dart';
+import 'package:cheesegang/features/favourites/data/favModel.dart';
 import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/features/orderHistory/data/order_model.dart';
 import 'package:cheesegang/features/orderHistory/data/order_repo.dart';
@@ -53,6 +54,7 @@ void main() async {
    await Hive.openBox<OrderHisModel>("orderHisBox");
    await Hive.openBox("delete_orders_his");
   await Hive.openBox<UserModel>("userData");
+  await Hive.openBox<FavouritesModel>("favBox");
   await Hive.openBox("userBox");// open the box fast to get token and image and userData
 
   // 1. تجهيز الـ API والـ Repo
