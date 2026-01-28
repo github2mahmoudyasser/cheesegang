@@ -11,6 +11,7 @@ import 'package:cheesegang/features/checkout/data/checkout_model.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_cubit.dart';
 import 'package:cheesegang/features/checkout/views/logic/checkout_state.dart';
 import 'package:cheesegang/features/checkout/widgets/pay_widget.dart';
+import 'package:cheesegang/features/orderHistory/views/logic/order_cubit.dart';
 import 'package:cheesegang/features/orderHistory/views/order_history_view.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,6 +43,7 @@ import '../../cart/views/logic/cart_state.dart';
        listener: (context,state){
          if (state is CheckoutSuccess) {
            _showOrderDonePopup(context); // نفتح الديالوج هنا مش في الـ onTap
+           context.read<OrderCubit>().getOrderHis();
          }
          if (state is CheckoutFailure) {
            ScaffoldMessenger.of(context).showSnackBar(customSnack(state.toString()));

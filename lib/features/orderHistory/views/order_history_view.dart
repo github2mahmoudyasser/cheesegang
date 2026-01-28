@@ -39,17 +39,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrderCubit, OrderState>(
-      listener: (context, state) {
-
-        //OrderHis error
-        if (state is OrderError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              customSnack("Failed to orderHistory, please try again"));
-        }
-
-
-      },
+    return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) {
         if (isGuest) {
           return _buildGuestView(context);

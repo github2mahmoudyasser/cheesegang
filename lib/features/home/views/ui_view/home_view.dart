@@ -171,33 +171,7 @@ class _HomeViewState extends State<HomeView> {
 
               // ================= Products Grid =================
               Expanded(
-                child: BlocConsumer<HomeCubit, HomeState>(
-                  listener: (context, state) {
-                    if(state is ProductSuccess&& state.isOffline){
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack("You use offline mode,check your internet"));
-                    }
-
-                    if (state is ProductFailure) {
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
-                    }
-
-                    if (state is AddFavSuccess) {
-                      final isAdded = context.read<HomeCubit>().favId.contains(state.favouritesModel.productId); // ask cubit this id here or no
-                      String message = isAdded
-                          ? "Added to favourite list"
-                          : "Removed from favourite list";
-
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack(message));
-                    }
-
-                    if(state is AddFavFailure){
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed,try again"));
-
-                    }
-
-
-
-                  },
+                child:BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
                     bool isError = state is ProductFailure;
                     bool isLoading = state is ProductLoading; // we use it to know data is loading or now to open Skeleton

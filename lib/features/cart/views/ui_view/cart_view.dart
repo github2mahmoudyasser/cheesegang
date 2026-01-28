@@ -36,29 +36,7 @@ class _CartViewState extends State<CartView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CartCubit, CartState>(
-      listener: (context, state) {
-
-
-        // add to cart state
-        if(state is AddToCartSuccess){
-          context.read<CartCubit>().getCart();
-        }
-
-
-
-       //cart error
-        if (state is CartError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              customSnack("Failed to get cart, please try again"));
-        }
-
-        // delete state
-         if(state is DeleteFailure){
-           ScaffoldMessenger.of(context).showSnackBar(customSnack("please, try again"));
-         }
-
-      },
+    return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         if (isGuest) {
           return _buildGuestView(context);

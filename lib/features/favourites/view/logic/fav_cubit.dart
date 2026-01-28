@@ -1,11 +1,9 @@
 
 
-    import 'package:cheesegang/core/network/api_error.dart';
 import 'package:cheesegang/core/utils/pref_helper.dart';
 import 'package:cheesegang/features/favourites/data/favModel.dart';
 import 'package:cheesegang/features/favourites/data/favRepo.dart';
 import 'package:cheesegang/features/favourites/view/logic/fav_states.dart';
-import 'package:cheesegang/features/home/views/logic/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_ce/hive.dart';
 

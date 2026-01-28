@@ -25,20 +25,6 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  final _email = TextEditingController();
-  final _name = TextEditingController();
-  final _address = TextEditingController();
-  final _visa = TextEditingController();
-
-  @override
-  void dispose() {
-    _email.dispose();
-    _name.dispose();
-    _address.dispose();
-    _visa.dispose();
-    super.dispose();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -46,25 +32,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfileCubit, ProfileState>(
-    listener: (context,state){
-      if(state is ProfileSuccess){
-        _name.text = state.userModel?.name ?? "";
-        _email.text = state.userModel?.email??"";
-        _address.text =state.userModel?.address?? "";
-        _visa.text = state.userModel?.visa??"";
-      }
-
-
-      //  error when failed data
-      else if (state is ProfileFailure) {
-        ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message??"SomeThing, went wrong"));
-      }
-      // action when logout
-      if(state is LogOutSuccess ){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>LoginView(),));
-      }
-    },
+    return BlocBuilder<ProfileCubit, ProfileState>(
     builder: (context,state) {
       final profileCubit = context.read<ProfileCubit>();
       final user = profileCubit.userModel;
@@ -139,11 +107,20 @@ class _ProfileViewState extends State<ProfileView> {
                       const Gap(30),
 
                       // الحقول (بتاخد الداتا من الـ controllers اللي اتملت في الـ Listener)
-                      ProfileTextField(label: "name", controller: _name, isNumber: false),
+                      ProfileTextField(
+                          label: "name",
+                          controller: context.read<ProfileCubit>().nameController,
+                          isNumber: false),
                       const Gap(20),
-                      ProfileTextField(label: "email", controller: _email, isNumber: false),
+                      ProfileTextField(
+                          label: "email",
+                          controller: context.read<ProfileCubit>().emailController,
+                          isNumber: false),
                       const Gap(20),
-                      ProfileTextField(label: "Address", controller: _address, isNumber: false),
+                      ProfileTextField(
+                          label: "Address",
+                          controller: context.read<ProfileCubit>().addressController,
+                          isNumber: false),
                       const Gap(20),
 
                       // في حالة التحميل أو وجود فيزا
@@ -156,7 +133,10 @@ class _ProfileViewState extends State<ProfileView> {
                           subtitle: Text(profileCubit.userModel?.visa ?? "**** **** **** ****", style: TextStyle(color: Colors.white70)),
                         )
                       else
-                        ProfileTextField(label: "visa", controller: _visa, isNumber: true),
+                        ProfileTextField(
+                            label: "visa",
+                            controller:context.read<ProfileCubit>().visaController,
+                            isNumber: true),
 
                       const Gap(35),
                       Row(
@@ -166,12 +146,15 @@ class _ProfileViewState extends State<ProfileView> {
                             text: "Edit",
                             icon: CupertinoIcons.pencil,
                             loading: state is UpdateProfileLoading,
-                            onTap: () => profileCubit.updateProfile(
-                                name: _name.text,
-                                email: _email.text,
-                                address: _address.text,
-                                visa: _visa.text
-                            ),
+                            onTap: (){
+                              final profileCubit = context.read<ProfileCubit>();
+                              profileCubit.updateProfile(
+                                  name: profileCubit.nameController.text,
+                                  email: profileCubit.emailController.text,
+                                  address: profileCubit.nameController.text,
+                                  visa: profileCubit.visaController.text
+                              );
+                            }
                           ),
                           _actionButton(
                             text: "Log Out",

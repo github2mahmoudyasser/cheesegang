@@ -14,120 +14,140 @@ import '../../../data/user_model.dart';
    String ? localImage;
 
    ProfileCubit(this.authRepo) :super(ProfileInitial());
+   final nameController = TextEditingController();
+   final emailController = TextEditingController();
+   final addressController = TextEditingController();
+   final visaController = TextEditingController();
 
-   //Get Profile Data
-   Future<void> getProfileData() async {
-     // 1. أولاً: نتحقق من وجود التوكن (ده الفيصل بين اليوزر والجيست)
-     final token = await PrefHelper.getToken();
+   @override
+   Future<void> close() {
+     // هنا بنقفل الـ Controllers اللي نقلناها للـ Cubit
+     nameController.dispose();
+     emailController.dispose();
+     addressController.dispose();
+     visaController.dispose();
 
-     if (token == null || token.isEmpty || token == "Guest") {
-       userModel = null;
-       emit(ProfileGuest()); // هنا بس يروح لصفحة "سجل دخول"
-       return;
+     return super.close(); // لازم تنادي السطر ده في الآخر
+   }
+     void updateControllers(UserModel? user) {
+       nameController.text = user?.name ?? "";
+       emailController.text = user?.email ?? "";
+       addressController.text = user?.address ?? "";
+       visaController.text = user?.visa ?? "";
      }
 
-     // 2. ثانياً: لو فيه توكن، نبدأ التحميل (User Mode)
-     emit(ProfileLoading());
+     //Get Profile Data
+     Future<void> getProfileData() async {
+       // 1. أولاً: نتحقق من وجود التوكن (ده الفيصل بين اليوزر والجيست)
+       final token = await PrefHelper.getToken();
 
-     try {
-       // محاولة جلب البيانات من الـ API
-       final data = await authRepo.getProfileData();
-
-       if (data != null) {
-         userModel = data;
-         localImage = await PrefHelper.getUserImage(userModel!.email);
-         emit(ProfileSuccess(userModel: userModel,localImage: localImage));
-       } else {
-         // لو السيرفر رد بـ null رغم وجود توكن (مشكلة في الحساب)
-         emit(ProfileFailure(message: "User data not found"));
+       if (token == null || token.isEmpty || token == "Guest") {
+         userModel = null;
+         emit(ProfileGuest()); // هنا بس يروح لصفحة "سجل دخول"
+         return;
        }
-     } catch (e) {
-       // 3. ثالثاً: لو حصل مشكلة في النت (DioException أو غيره)
-       // هنا بنبعت Failure عشان الـ UI يظهر شاشة الـ Error مش الـ Guest
-       String errorMessage = "Bad connection, please try again.";
 
-       // لو بتستخدم Dio ومسوي له Handler زي الـ Products
-       /*
+       // 2. ثانياً: لو فيه توكن، نبدأ التحميل (User Mode)
+       emit(ProfileLoading());
+
+       try {
+         // محاولة جلب البيانات من الـ API
+         final data = await authRepo.getProfileData();
+
+         if (data != null) {
+           userModel = data;
+           localImage = await PrefHelper.getUserImage(userModel!.email);
+           updateControllers(userModel);
+           emit(ProfileSuccess(userModel: userModel, localImage: localImage));
+         } else {
+           // لو السيرفر رد بـ null رغم وجود توكن (مشكلة في الحساب)
+           emit(ProfileFailure(message: "User data not found"));
+         }
+       } catch (e) {
+         // 3. ثالثاً: لو حصل مشكلة في النت (DioException أو غيره)
+         // هنا بنبعت Failure عشان الـ UI يظهر شاشة الـ Error مش الـ Guest
+         String errorMessage = "Bad connection, please try again.";
+
+         // لو بتستخدم Dio ومسوي له Handler زي الـ Products
+         /*
     if (e is DioException) {
       errorMessage = ApiExceptions.handleError(e).toString();
     }
     */
 
-       emit(ProfileFailure(message: errorMessage));
+         emit(ProfileFailure(message: errorMessage));
+       }
      }
-   }
 
 
-    // load image
-   Future <void> loadImage(String email)async{
-   localImage= await PrefHelper.getUserImage(email);
-   emit(ProfileSuccess(userModel: userModel,localImage: localImage));
-   }
-
+     // load image
+     Future <void> loadImage(String email) async {
+       localImage = await PrefHelper.getUserImage(email);
+       emit(ProfileSuccess(userModel: userModel, localImage: localImage));
+     }
 
 
      //log Out
-  Future<void> logOut()async{
-     emit(LogOutLoading());
-       try{
+     Future<void> logOut() async {
+       emit(LogOutLoading());
+       try {
          await authRepo.logOut();
          emit(LogOutSuccess());
-       }catch(e){
+       } catch (e) {
          String msg = "Success to LogOut";
-        debugPrint(msg);
+         debugPrint(msg);
          emit(LogOutSuccess());
        }
-
-  }
-
-       //update profile
-   Future<void> updateProfile({
-   required String name,
-   required String email,
-   required String address,
-   required String visa,
-   }) async {
-   if (userModel == null) return;
-
-   emit(UpdateProfileLoading());
-   try {
-   final updatedData = await authRepo.updateProfile(
-   name: name,
-   email: email,
-   address: address,
-   imagePath: selectImage,
-   visa: visa,
-   );
-
-   userModel = updatedData;
-   emit(ProfileSuccess(userModel: userModel,localImage: selectImage));
-   } catch (e) {
-     String msg = "Failed Update";
-     if(e is ApiError){
-       emit(ProfileFailure(message: msg));
      }
-     // if failed return to success mode
-   emit(ProfileSuccess(userModel: userModel, localImage: selectImage));
-   }
-   }
 
+     //update profile
+     Future<void> updateProfile({
+       required String name,
+       required String email,
+       required String address,
+       required String visa,
+     }) async {
+       if (userModel == null) return;
 
-   // pickImage
-   Future<void> pickImage() async {
-     try {
-       final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-       if (pickedImage != null && userModel?.email != null) {
-         selectImage = pickedImage.path;
-         await PrefHelper.saveUserImage(userModel!.email, pickedImage.path);
+       emit(UpdateProfileLoading());
+       try {
+         final updatedData = await authRepo.updateProfile(
+           name: name,
+           email: email,
+           address: address,
+           imagePath: selectImage,
+           visa: visa,
+         );
 
+         userModel = updatedData;
+         emit(ProfileSuccess(userModel: userModel, localImage: selectImage));
+       } catch (e) {
+         String msg = "Failed Update";
+         if (e is ApiError) {
+           emit(ProfileFailure(message: msg));
+         }
+         // if failed return to success mode
          emit(ProfileSuccess(userModel: userModel, localImage: selectImage));
        }
-     } catch (e) {
-       emit(ProfileFailure(message: "Failed to pick image"));
+     }
+
+
+     // pickImage
+     Future<void> pickImage() async {
+       try {
+         final pickedImage = await ImagePicker().pickImage(
+             source: ImageSource.gallery);
+         if (pickedImage != null && userModel?.email != null) {
+           selectImage = pickedImage.path;
+           await PrefHelper.saveUserImage(userModel!.email, pickedImage.path);
+
+           emit(ProfileSuccess(userModel: userModel, localImage: selectImage));
+         }
+       } catch (e) {
+         emit(ProfileFailure(message: "Failed to pick image"));
+       }
      }
    }
-
- }
 
 
 

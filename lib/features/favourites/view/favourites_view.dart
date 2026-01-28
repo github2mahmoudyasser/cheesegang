@@ -42,12 +42,7 @@ class _FavouritesViewState extends State<FavouritesView> {
     backgroundColor: Colors.white,
     elevation: 0,
    ),
-   body: BlocConsumer<FavCubit, FavStates>(
-    listener: (context, state) {
-     if (state is FavFailure) {
-      ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
-     }
-    },
+   body: BlocBuilder<FavCubit, FavStates>(
     builder: (context, state) {
      if (state is FavGuest) {
       return _buildGuestView(context);

@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../cart/views/logic/cart_cubit.dart';
 import '../../data/details_model.dart';
   class ProductDetailsView extends StatefulWidget {
     const ProductDetailsView({super.key, required this.productId, required this.productPrice, required this.image,});
@@ -44,6 +45,9 @@ import '../../data/details_model.dart';
     Widget build(BuildContext context) {
       return BlocConsumer<ProductDetailsCubit,ProductDetailsState>(
         listener: (context,state){
+          if (state is AddToCartSuccess) {
+            context.read<CartCubit>().getCart();
+          }
 
           // topping failure
           if(state is GetToppingFailure){
