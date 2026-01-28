@@ -11,9 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeCubit extends Cubit<HomeState> {
   final ProductRepo productRepo;
 
-  HomeCubit(this.productRepo) : super(ProductInitial()){
-    loadMyFav();
-  }
+  HomeCubit(this.productRepo) : super(ProductInitial());
+
 
    List<ProductModel> _allProducts = [];
 
@@ -27,6 +26,15 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> getProducts() async {
     emit(ProductLoading());
     try {
+
+      final cachedFav = await PrefHelper.getCachedFav(); //get fav from cached
+      if(cachedFav.isNotEmpty) {
+        favId =
+            cachedFav.map((fav) => fav.id).toSet(); // catch id from the list
+      }
+
+
+
       //get data from Api
       final productData = await productRepo.getProducts();
 
@@ -99,21 +107,12 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
    void toggleFav(int productId){
-      if(favId.contains(productId)){
-        favId.remove(productId);
+      if(favId.contains(productId)){ // ask for id
+        favId.remove(productId); // if yes remove heart
       }else{
-        favId.add(productId);
+        favId.add(productId); // else add heart
       }
-      emit(ProductSuccess(products: _allProducts, isOffline: false));
-  }
-
-
-  void loadMyFav()async{
-    final cachedFav = await PrefHelper.getCachedFav();
-    if(cachedFav.isNotEmpty){
-      favId = cachedFav.map((fav)=> fav.id).toSet();
-      emit(ProductSuccess(products: _allProducts, isOffline: false));
-    }
+      emit(ProductSuccess(products: _allProducts, isOffline: false)); // draw screen whith new data
   }
 
 }
