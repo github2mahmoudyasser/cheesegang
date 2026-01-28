@@ -29,8 +29,7 @@ class HomeCubit extends Cubit<HomeState> {
 
       final cachedFav = await PrefHelper.getCachedFav(); //get fav from cached
       if(cachedFav.isNotEmpty) {
-        favId =
-            cachedFav.map((fav) => fav.id).toSet(); // catch id from the list
+        favId = cachedFav.map((fav) => fav.id).toSet(); // catch id from the list
       }
 
 

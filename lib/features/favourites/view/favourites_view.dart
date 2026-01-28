@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cheesegang/features/favourites/data/favModel.dart';
 import 'package:cheesegang/features/favourites/view/logic/fav_cubit.dart';
 import 'package:cheesegang/features/favourites/view/logic/fav_states.dart';
+import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
 import 'package:cheesegang/shared/widgets/costum_snakebar.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +105,9 @@ class _FavouritesViewState extends State<FavouritesView> {
            imageUrl: item.image, width: 50),
           title: Text(item?.name ?? "Product Name Loading"),
           subtitle: CustomText(text: "\$ ${item?.price ?? '00'} ",color: Colors.green,),
-          trailing: const Icon(Icons.favorite, color: Colors.red),
+          trailing: GestureDetector(
+           onTap: ()=> context.read<FavCubit>().deleteFav(item.id),
+              child: const Icon(Icons.delete, color: Colors.red)),
          ),
         ),
       );
