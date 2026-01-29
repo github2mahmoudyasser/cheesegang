@@ -35,13 +35,13 @@
 <p align="center">
   <img src="screenShot/loginscreen.jpg" width="350">
   <br>
-  <i>Login- Interactive 3D Burgers & Categories</i>
+  <i>Login- </i>
 </p>
 
 <p align="center">
   <img src="screenShot/signupscreen.jpg" width="350">
   <br>
-  <i>SignUp - Interactive 3D Burgers & Categories</i>
+  <i>SignUp - </i>
 </p>
 
 
