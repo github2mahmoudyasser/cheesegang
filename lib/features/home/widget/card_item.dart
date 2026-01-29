@@ -13,8 +13,14 @@ class CardItem extends StatelessWidget {
      required this.image,
      required this.text,
      required this.desc,
-     required this.rate});
+     required this.rate,
+    required this.fav,
+    required this.isFav, required this.onTap});
   final String image, text, desc, rate;
+  final Function() fav;
+  final bool isFav;
+  final Function() onTap;
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +33,25 @@ class CardItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-                child: ClipRRect(
-              borderRadius: BorderRadiusGeometry.circular(15),
-              child: Skeleton.replace(
-                width: 140,
-                  height: 115,
-                  child: CachedNetworkImage(imageUrl: image,width: 140,height:115,
-                    fit: BoxFit.cover,
-                    errorWidget: (context,url,error)=>Container(
-                      color: Colors.grey.shade200,
-                      child: const Icon(Icons.broken_image,color: Colors.grey,),
-                    ),
-                     )
-              ),
+            GestureDetector(
+              onTap:onTap ,
+              child: Center(
+                  child: ClipRRect(
+                borderRadius: BorderRadiusGeometry.circular(15),
+                child: Skeleton.replace(
+                  width: 140,
+                    height: 115,
+                    child: CachedNetworkImage(imageUrl: image,width: 140,height:115,
+                      fit: BoxFit.cover,
+                      errorWidget: (context,url,error)=>Container(
+                        color: Colors.grey.shade200,
+                        child: const Icon(Icons.broken_image,color: Colors.grey,),
+                      ),
+                       )
+                ),
 
-            )),
+              )),
+            ),
             Gap(10),
             CustomText(text: text,
               weight: FontWeight.bold,
@@ -62,7 +71,16 @@ class CardItem extends StatelessWidget {
                   size: 12,
                 color: Colors.black,),
                 Spacer(),
-                Icon(CupertinoIcons.heart,color: AppColors.primary,size: 20,)
+                GestureDetector(
+                  onTap:fav ,
+                    child:
+                    Icon(
+                      isFav?
+                    CupertinoIcons.heart_fill
+                    :  CupertinoIcons.heart,
+                      color: isFav?
+                          AppColors.primary
+                      :Colors.black,size: 20,))
               ],
             )
           ],

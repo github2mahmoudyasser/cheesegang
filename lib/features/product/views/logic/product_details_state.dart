@@ -9,45 +9,27 @@ abstract class ProductDetailsState extends Equatable {
       }
 
       // Initial state
-      class InitialState extends ProductDetailsState{}
+      class InitialExtra extends ProductDetailsState{}
 
        // Topping state
-      class GetToppingLoading extends ProductDetailsState{}
+      class GetExtraLoading extends ProductDetailsState{}
 
-      class GetToppingSuccess extends ProductDetailsState{
-       final List<DetailsModel> toppings;
-        GetToppingSuccess({required this.toppings});
+      class GetExtraSuccess extends ProductDetailsState{
+       final List<DetailsModel> extra;
+        GetExtraSuccess({required this.extra});
        @override
-       List<Object?> get props => [toppings];
+       List<Object?> get props => [extra];
 
       }
-      class GetToppingFailure extends ProductDetailsState{
+      class GetExtraFailure extends ProductDetailsState{
         final String? message;
-        GetToppingFailure({this.message});
+        GetExtraFailure({this.message});
         @override
         List<Object?> get props => [message];
       }
 
 
 
-
-      // option states
-        class GetOptionsInitial  extends ProductDetailsState{}
-        class GetOptionsLoading extends ProductDetailsState{}
-       class GetOptionsSuccess extends ProductDetailsState{
-         final List<DetailsModel> options;
-         GetOptionsSuccess({required this.options});
-         @override
-         List<Object?> get props => [options];
-
-       }
-
-       class GetOptionFailure extends ProductDetailsState{
-        final String? message;
-        GetOptionFailure({this.message});
-        @override
-        List<Object?> get props => [message];
-       }
 
 
       //change qty

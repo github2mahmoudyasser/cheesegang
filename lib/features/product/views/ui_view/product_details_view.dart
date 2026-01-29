@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../cart/views/logic/cart_cubit.dart';
 import '../../data/details_model.dart';
   class ProductDetailsView extends StatefulWidget {
     const ProductDetailsView({super.key, required this.productId, required this.productPrice, required this.image,});
@@ -44,16 +45,15 @@ import '../../data/details_model.dart';
     Widget build(BuildContext context) {
       return BlocConsumer<ProductDetailsCubit,ProductDetailsState>(
         listener: (context,state){
+          if (state is AddToCartSuccess) {
+            context.read<CartCubit>().getCart();
+          }
 
           // topping failure
-          if(state is GetToppingFailure){
-            ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed to load topping"));
+          if(state is GetExtraFailure){
+            ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed to load Extra"));
           }
 
-          //Option failure
-          if(state is GetOptionFailure){
-            ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed to load SideOptions"));
-          }
 
           //Add to cart state
           if(state is AddToCartSuccess){
@@ -65,10 +65,9 @@ import '../../data/details_model.dart';
         },
 
           builder: (context,state){
-          bool loadToppings = state is GetToppingLoading;   // ask the state load or no
-          final List<DetailsModel> toppings =
-              context.read<ProductDetailsCubit>().toppings ?? []; // to fetch topping data
-          bool loadSideOptions = state is GetOptionsLoading;
+          bool loadToppings = state is GetExtraLoading;   // ask the state load or no
+          final List<DetailsModel> toppings = context.read<ProductDetailsCubit>().toppings ?? []; // to fetch topping data
+          bool loadSideOptions = state is GetExtraLoading;
           final List<DetailsModel> options = context.read<ProductDetailsCubit>().options ?? [];
 
           return Scaffold(
@@ -332,8 +331,7 @@ import '../../data/details_model.dart';
 
 
 
-
-
+//old code
 /*
 import 'package:cheesegang/core/constants/app_colors.dart';
 import 'package:cheesegang/core/network/api_error.dart';

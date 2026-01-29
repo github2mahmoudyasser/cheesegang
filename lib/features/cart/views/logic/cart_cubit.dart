@@ -65,7 +65,7 @@ class CartCubit extends Cubit<CartState> {
 
 
   void clearCartData()async {
-    await Hive.box<GetCartModel>("cartBox").clear();
+    await Hive.box<GetCartModel>("cartBox").clear(); // clear hive when user is guest
     emit(CartInitial());
   }
   }
@@ -80,34 +80,7 @@ class CartCubit extends Cubit<CartState> {
 
 
 
-   //check out
-  /*Future<void> checkOutOrder(List<CartItemModel> itemModel)async{
-    emit(SaveOrderLoading());
-    try{
-     final List<CartModel> items  = itemModel.map((orders){
-       return CartModel(
-           productId:orders.productId,
-           qty: orders.qty,
-         spicy: double.tryParse(orders.spicy),
-         toppings: orders.toppings.map((t) => t.id).toList(),
-         options: orders.sideOptions.map((o) => o.id).toList(),
-       );
-    }).toList();
-            final request = CartRequestModel(items: items);
-            await cartRepo.checkOut(request);
-     emit(SaveOrderSuccess());
 
-    }catch(e){
-      String msg = "Failed to checkout order";
-      if(e is ApiError){
-        msg = e.message;
-      }
-      emit(SaveOrderFailure(message: msg));
-    }
-
-  }
-
-   */
 
 
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cheesegang/core/constants/app_colors.dart';
+import 'package:cheesegang/features/Root/logic/root_cubit.dart';
 import 'package:cheesegang/features/product/views/ui_view/product_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -170,16 +171,7 @@ class _HomeViewState extends State<HomeView> {
 
               // ================= Products Grid =================
               Expanded(
-                child: BlocConsumer<HomeCubit, HomeState>(
-                  listener: (context, state) {
-                    if(state is ProductSuccess&& state.isOffline){
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack("You use offline mode,check your internet"));
-                    }
-
-                    if (state is ProductFailure) {
-                      ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
-                    }
-                  },
+                child:BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
                     bool isError = state is ProductFailure;
                     bool isLoading = state is ProductLoading; // we use it to know data is loading or now to open Skeleton
@@ -247,20 +239,25 @@ class _HomeViewState extends State<HomeView> {
                                          rate: "5")
                                          : products[index];
 
-                                     return GestureDetector(
+                                     return CardItem(
                                        onTap: (){
                                          Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductDetailsView(
                                            image: product.image,
                                            productId: product.id,
                                            productPrice: product.price,)));
                                        },
-                                       child: CardItem(
-                                         //  i use product here because when data is load this variable will show fake data it help me stop crash when load data
-                                         image: product.image,
-                                         text: product.name,
-                                         desc: product.desc,
-                                         rate: product.rate,
-                                       ),
+                                       fav: (){
+                                         context.read<HomeCubit>().toggleFav(product.id);
+                                         context.read<HomeCubit>().addFavProducts(productId: product.id);
+
+                                       },
+                                       //  i use product here because when data is load this variable will show fake data it help me stop crash when load data
+                                       image: product.image,
+                                       text: product.name,
+                                       desc: product.desc,
+                                       rate: product.rate,
+                                       isFav:context.read<HomeCubit>().favId.contains(product.id),
+
                                      );
                                    },
                                    childCount: isLoading ? 6 : products.length,

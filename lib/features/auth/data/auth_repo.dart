@@ -1,5 +1,12 @@
 
 
+
+// TODO: Implement IProductRepository interface to achieve full Abstraction.
+// This will allow for easier Unit Testing and better adherence to the
+// Dependency Inversion Principle (SOLID).
+// This allows us to swap the Data Source  switching from API to Firebase or Mock Data)
+// // without changing a single line of code in the UI or Business Logic.
+
 import 'package:cheesegang/core/network/api_error.dart';
 import 'package:cheesegang/core/network/api_exception.dart';
 import 'package:cheesegang/core/network/api_service.dart';
@@ -8,13 +15,13 @@ import 'package:cheesegang/features/auth/data/user_model.dart';
 import 'package:dio/dio.dart';
 
 
+ //async await Asynchronous Optimization
+
              class AuthRepo {
-              // كتبناة بالطريقة دي عشان ميعملش ApiService كل مرة من نفسة
-              //عشان لما اجي اشغل نسخة الRepo من ال main تبقا نفس النسخة في جميع الشاشات
-              final ApiService  apiService; // 1. بنعرف المتغير
-              AuthRepo(this.apiService);    // 2. بنستلمه في الـ Constructor
+              final ApiService  apiService;
+              AuthRepo(this.apiService); //Dependency Injection
               bool isGuest = false;
-              UserModel? _currentUser; // ده اللي هيشيل بيانات المستخدم طول ما البرنامج شغال
+              UserModel? _currentUser;  //Encapsulation
 
                 // Dry(Don't repeat your self)
               Future<UserModel?> _auth(String endPoint, Map<String, dynamic>body) async {

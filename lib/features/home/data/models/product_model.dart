@@ -4,6 +4,9 @@ import 'dart:core';
 import 'package:hive_ce/hive.dart';
 part 'product_model.g.dart';
 
+
+//S - Single Responsibility
+//D - Dependency Inversion (عكس التبعية) if server change any thing iwill change it from here;
 @HiveType(typeId: 0)
  class ProductModel {
 @HiveField(0)
@@ -50,6 +53,18 @@ part 'product_model.g.dart';
 
 
  }
+
+// Is Fav
+class IsFav{
+  final int productId;
+
+  IsFav({
+    required this.productId
+  });
+  Map<String,dynamic> toJson()=>{
+    "product_id":productId
+  };
+}
 
 
 

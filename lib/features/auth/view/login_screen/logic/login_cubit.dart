@@ -9,7 +9,9 @@ import '../../../data/auth_repo.dart';
     class LoginCubit  extends Cubit<LoginState>{
                final AuthRepo authRepo;
                LoginCubit(this.authRepo) :super(LoginInitial());
-
+// s, s ,s (start ,stay ,stop)
+//Dependency Injection
+// S - Single Responsibility  by control ui state only
 
                  Future<void> login(String email, String password)async{
                    emit(LoginLoading());

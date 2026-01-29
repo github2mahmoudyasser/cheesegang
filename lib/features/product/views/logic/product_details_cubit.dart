@@ -1,7 +1,6 @@
 
 
    import 'package:cheesegang/core/network/api_error.dart';
-import 'package:cheesegang/features/cart/data/cart_model.dart';
 import 'package:cheesegang/features/cart/data/cart_repo.dart';
 import 'package:cheesegang/features/product/repo/details_repo.dart';
 import 'package:cheesegang/features/product/views/logic/product_details_state.dart';
@@ -15,40 +14,40 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
   List<DetailsModel>? toppings;
   List<DetailsModel>? options;
   int quantity = 1;
-  ProductDetailsCubit(this.detailsRepo,this.cartRepo):super(InitialState());
+  ProductDetailsCubit(this.detailsRepo,this.cartRepo):super(InitialExtra());
 
    // getToppings
  Future<void> getToppings()async{
-   emit(GetToppingLoading());
+   emit(GetExtraLoading());
    try{
       final toppingData = await detailsRepo.getToppings();
       toppings = toppingData;
-      emit(GetToppingSuccess(toppings: toppingData));
+      emit(GetExtraSuccess(extra: toppingData));
 
    }catch (e){
      String msg = "Failed to load toppings";
       if(e is ApiError){
         msg = e.message;
       }
-     emit(GetToppingFailure(message: msg));
+     emit(GetExtraFailure(message: msg));
    }
 
  }
 
   // getOptions
   Future<void> getOptions()async{
-    emit(GetOptionsLoading());
+    emit(GetExtraLoading());
     try{
       final sideOptionData = await detailsRepo.getSideOptions();
       options  =sideOptionData;
-      emit(GetOptionsSuccess(options: sideOptionData));
+      emit(GetExtraSuccess(extra:options!));
 
     }catch(e){
     String msg = "Failed to load sideOptions";
     if(e is ApiError){
     msg = e.message;
     }
-    emit(GetOptionFailure(message: msg));
+    emit(GetExtraFailure(message: msg));
 
     }
   }
@@ -95,7 +94,7 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
 
   void resetState() {
    quantity = 1;
-    emit(InitialState());
+    emit(InitialExtra());
   }
 
   }
