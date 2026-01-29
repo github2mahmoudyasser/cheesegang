@@ -4,6 +4,9 @@ import 'dart:core';
 import 'package:hive_ce/hive.dart';
 part 'product_model.g.dart';
 
+
+//S - Single Responsibility
+//D - Dependency Inversion (عكس التبعية) if server change any thing iwill change it from here;
 @HiveType(typeId: 0)
  class ProductModel {
 @HiveField(0)

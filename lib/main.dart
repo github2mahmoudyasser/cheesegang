@@ -37,6 +37,7 @@ void main() async {
   // إخفاء الـ bars بالكامل
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
+
   // Init Hive
   await Hive.initFlutter(); // to ask system do you give me space to put my data
   Hive.registerAdapter(ProductModelAdapter());// TypeId 0
@@ -49,7 +50,7 @@ void main() async {
   Hive.registerAdapter(UserModelAdapter()); //TypeId 7
   Hive.registerAdapter(OrderHisModelAdapter()); // TypeId 8
   Hive.registerAdapter(OrderDataAdapter()); // TypeId 9
- Hive.registerAdapter(FavModelAdapter());
+ Hive.registerAdapter(FavModelAdapter());// TypeId10
 
 
   await Hive.openBox<ProductModel>('productsBox');
@@ -60,6 +61,10 @@ void main() async {
   await Hive.openBox<UserModel>("userData");
   await Hive.openBox<FavouritesModel>("favBox");
   await Hive.openBox("userBox");// open the box fast to get token and image and userData
+
+
+
+  //Dependency Injection
 
   // 1. تجهيز الـ API والـ Repo
   final apiService = ApiService();
@@ -108,7 +113,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        navigatorKey: navigatorKey,
+        navigatorKey: navigatorKey, //Inversion of Control (IoC) control nav from main //Dependency Injection by put it in main
         debugShowCheckedModeBanner: false,
         title: 'cheese gang',
         home: SplashView()

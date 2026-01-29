@@ -4,8 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cheesegang/features/favourites/data/favModel.dart';
 import 'package:cheesegang/features/favourites/view/logic/fav_cubit.dart';
 import 'package:cheesegang/features/favourites/view/logic/fav_states.dart';
-import 'package:cheesegang/features/home/views/logic/home_cubid.dart';
-import 'package:cheesegang/shared/widgets/costum_snakebar.dart';
 import 'package:cheesegang/shared/widgets/costum_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,13 +42,13 @@ class _FavouritesViewState extends State<FavouritesView> {
    ),
    body: BlocBuilder<FavCubit, FavStates>(
     builder: (context, state) {
+
      if (state is FavGuest) {
       return _buildGuestView(context);
 
      }
-
-
        List<FavouritesModel>? favData;
+
        if (state is FavSuccess) favData = state.favourites;
 
        bool isWaiting = state is FavLoading || state is FavInitial;

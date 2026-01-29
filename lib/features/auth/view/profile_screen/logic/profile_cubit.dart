@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../../core/network/api_error.dart';
 import '../../../data/user_model.dart';
 
+//S - Single Responsibility this cubit control every thing
+
  class  ProfileCubit extends Cubit<ProfileState> {
    final AuthRepo authRepo;
    UserModel? userModel;
@@ -14,6 +16,8 @@ import '../../../data/user_model.dart';
    String ? localImage;
 
    ProfileCubit(this.authRepo) :super(ProfileInitial());
+
+   // i move controllers from ui to cubit
    final nameController = TextEditingController();
    final emailController = TextEditingController();
    final addressController = TextEditingController();
@@ -21,13 +25,12 @@ import '../../../data/user_model.dart';
 
    @override
    Future<void> close() {
-     // هنا بنقفل الـ Controllers اللي نقلناها للـ Cubit
      nameController.dispose();
      emailController.dispose();
      addressController.dispose();
      visaController.dispose();
 
-     return super.close(); // لازم تنادي السطر ده في الآخر
+     return super.close();
    }
      void updateControllers(UserModel? user) {
        nameController.text = user?.name ?? "";
@@ -38,16 +41,14 @@ import '../../../data/user_model.dart';
 
      //Get Profile Data
      Future<void> getProfileData() async {
-       // 1. أولاً: نتحقق من وجود التوكن (ده الفيصل بين اليوزر والجيست)
        final token = await PrefHelper.getToken();
 
        if (token == null || token.isEmpty || token == "Guest") {
          userModel = null;
-         emit(ProfileGuest()); // هنا بس يروح لصفحة "سجل دخول"
+         emit(ProfileGuest());
          return;
        }
 
-       // 2. ثانياً: لو فيه توكن، نبدأ التحميل (User Mode)
        emit(ProfileLoading());
 
        try {
@@ -60,21 +61,10 @@ import '../../../data/user_model.dart';
            updateControllers(userModel);
            emit(ProfileSuccess(userModel: userModel, localImage: localImage));
          } else {
-           // لو السيرفر رد بـ null رغم وجود توكن (مشكلة في الحساب)
            emit(ProfileFailure(message: "User data not found"));
          }
        } catch (e) {
-         // 3. ثالثاً: لو حصل مشكلة في النت (DioException أو غيره)
-         // هنا بنبعت Failure عشان الـ UI يظهر شاشة الـ Error مش الـ Guest
          String errorMessage = "Bad connection, please try again.";
-
-         // لو بتستخدم Dio ومسوي له Handler زي الـ Products
-         /*
-    if (e is DioException) {
-      errorMessage = ApiExceptions.handleError(e).toString();
-    }
-    */
-
          emit(ProfileFailure(message: errorMessage));
        }
      }

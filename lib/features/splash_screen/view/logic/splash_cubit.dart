@@ -5,8 +5,10 @@
 import 'package:cheesegang/features/auth/data/auth_repo.dart';
 import 'package:cheesegang/features/splash_screen/view/logic/splash_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+//Single Responsibility
+ //Dependency Injection
 
-class SplashCubit extends Cubit<SplashState>{
+    class SplashCubit extends Cubit<SplashState>{
    final AuthRepo authRepo;
    SplashCubit(this.authRepo):super (SplashInitial());
 
@@ -24,9 +26,9 @@ class SplashCubit extends Cubit<SplashState>{
            }
         }catch(e){
           if (authRepo.isGuest) {
-            emit(UserUnLoggedIn());;
+            emit(UserUnLoggedIn()); // if any thing happen when use is guest
           }else{
-            emit(UserIsLoggedIn());
+            emit(UserIsLoggedIn()); // else user is login
           }
 
 

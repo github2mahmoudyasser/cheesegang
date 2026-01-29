@@ -32,7 +32,7 @@ class _LoginViewState extends State<LoginView> {
 
       @override
   void dispose() {
-        emailController.dispose();
+        emailController.dispose(); // delete controller when close data and stop memory leaks
         passController.dispose();
     super.dispose();
   }

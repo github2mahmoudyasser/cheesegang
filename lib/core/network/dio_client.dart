@@ -12,7 +12,9 @@ import 'package:cheesegang/core/utils/pref_helper.dart';
           import 'package:dio/dio.dart';
 
 import '../navigation/app_navigator.dart';
-
+//Encapsulation
+//S - Single Responsibility
+//D - Dependency Inversion i use this class in Api service;
            class DioClient {
             final  Dio _dio  = Dio(
                 BaseOptions(
@@ -32,7 +34,7 @@ import '../navigation/app_navigator.dart';
                    // requestBody: true,
                  // )
                // );
-               _dio.interceptors.add(
+               _dio.interceptors.add( // use interceptor to send token with any request
                  InterceptorsWrapper(
                    onRequest: (option,handler)async{
                       final token = await PrefHelper.getToken();

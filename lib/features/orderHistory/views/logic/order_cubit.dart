@@ -51,7 +51,7 @@ class OrderCubit extends Cubit<OrderState>{
 
      await PrefHelper.addToBlackList(orderId);// add delete item at black list
 
-     orderHisModel!.order.removeWhere((item)=>item.id==orderId); // delete order from list by id
+     orderHisModel!.order.removeWhere((item)=>item.id==orderId); // delete order from  memory list by id
 
      await PrefHelper.cachedOrderHis(orderHisModel!); // save new data in cach
      emit(OrderSuccess(orderHisModel: orderHisModel)); // sent new state for new data

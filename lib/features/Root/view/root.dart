@@ -49,7 +49,6 @@ class Root extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(customSnack(state.message));
             }
             if (state is AddFavSuccess) {
-              // التحديث هنا: لما تنجح في الهوم، حدّث قائمة المفضلات فوراً
               context.read<FavCubit>().getFavourites();
 
               final isAdded = context.read<HomeCubit>().favId.contains(state.favouritesModel.productId);
@@ -61,6 +60,10 @@ class Root extends StatelessWidget {
             if (state is AddFavFailure) {
               ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed, try again"));
             }
+            if (state is ProductGuestError) {
+              ScaffoldMessenger.of(context).showSnackBar(customSnack("Please login first to add favorites!"));
+            }
+
           },
         ),
 
@@ -126,76 +129,66 @@ class Root extends StatelessWidget {
               index: state,
               children: screens,
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 25),
-              child: GlassmorphicContainer(
-                width: double.infinity,
-                height: 70,
-                borderRadius: 50,
-                linearGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.2),
-                    Colors.white.withOpacity(0.1),
-                  ],
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, bottom: 25),
+              child:    GlassmorphicContainer(width: double.infinity,
+                      height: 77,
+                      borderRadius: 50,
+                      linearGradient: LinearGradient(
+                          colors:[
+                            Colors.black.withAlpha(38),
+                            Colors.black.withAlpha(13),
+                          ]),
+                      border: 0,
+                      blur: 15,
+                      borderGradient:LinearGradient(colors: [
+                        Colors.white.withAlpha(51),   // 0.2 تقريبا
+                        Colors.white.withAlpha(13),   // 0.05 تقريبا
+
+                      ]),
+                      child:BottomNavigationBar(
+                        elevation: 0,
+                        backgroundColor:Colors.transparent ,
+                        type:BottomNavigationBarType.fixed ,
+                        selectedItemColor:AppColors.primary ,
+                        unselectedItemColor:Colors.black ,
+                        currentIndex:state ,
+                        onTap:(index)=> context.read<RootCubit>().changeScreen(index),
+                                            items: const [
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Icon(CupertinoIcons.home, size: 22),
+                          ),
+                          label: "Home"),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Icon(CupertinoIcons.cart, size: 22),
+                          ),
+                          label: "Cart"),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Icon(CupertinoIcons.heart_fill, size: 22),
+                          ),
+                          label: "Fav"),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Icon(Icons.local_restaurant_sharp, size: 22),
+                          ),
+                          label: "Orders"),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Icon(CupertinoIcons.person, size: 22),
+                          ),
+                          label: "Profile"),
+                                            ],
+                                          ),
                 ),
-                border: 1,
-                blur: 15,
-                borderGradient: LinearGradient(
-                  colors: [
-                    Colors.grey.withOpacity(0.3),
-                    Colors.grey.withOpacity(0.05)
-                  ],
-                ),
-                child: BottomNavigationBar(
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
-                  type: BottomNavigationBarType.fixed,
-                  selectedItemColor: AppColors.primary,
-                  unselectedItemColor: Colors.black,
-                  selectedFontSize: 11,
-                  unselectedFontSize: 10,
-                  currentIndex: state,
-                  onTap: (index) {
-                    // الآن الـ RootCubit متاح للـ Context ده بسهولة
-                    context.read<RootCubit>().changeScreen(index);
-                  },
-                  items: const [
-                    BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Icon(CupertinoIcons.home, size: 22),
-                        ),
-                        label: "Home"),
-                    BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Icon(CupertinoIcons.cart, size: 22),
-                        ),
-                        label: "Cart"),
-                    BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Icon(CupertinoIcons.heart_fill, size: 22),
-                        ),
-                        label: "Fav"),
-                    BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Icon(Icons.local_restaurant_sharp, size: 22),
-                        ),
-                        label: "Orders"),
-                    BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Icon(CupertinoIcons.person, size: 22),
-                        ),
-                        label: "Profile"),
-                  ],
-                ),
-              ),
-            ),
+              )
           );
         },
       ),

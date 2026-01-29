@@ -20,16 +20,23 @@ class HomeCubit extends Cubit<HomeState> {
 
  // reset home data
   void clearHomeData() {
+    favId.clear();
     emit(ProductInitial());
   }
 
   Future<void> getProducts() async {
     emit(ProductLoading());
     try {
+      final token = await PrefHelper.getToken();
 
-      final cachedFav = await PrefHelper.getCachedFav(); //get fav from cached
-      if(cachedFav.isNotEmpty) {
-        favId = cachedFav.map((fav) => fav.id).toSet(); // catch id from the list
+      if (token == null || token.isEmpty || token == "Guest") {
+        favId = {};
+      }else {
+        final cachedFav = await PrefHelper.getCachedFav(); //get fav from cached
+        if (cachedFav.isNotEmpty) {
+          favId =
+              cachedFav.map((fav) => fav.id).toSet(); // catch id from the list
+        }
       }
 
 
@@ -57,7 +64,6 @@ class HomeCubit extends Cubit<HomeState> {
 
 
   // search
-
   void search(String text){
     final filterProducts = _allProducts
    . where((p)=> p.name.toLowerCase().contains(text.toLowerCase()))
@@ -105,8 +111,16 @@ class HomeCubit extends Cubit<HomeState> {
 
   }
 
-   void toggleFav(int productId){
-      if(favId.contains(productId)){ // ask for id
+   void toggleFav(int productId)async{
+     final token = await PrefHelper.getToken();
+
+     if (token == null || token.isEmpty || token == "Guest") {
+       emit(ProductGuestError());
+       emit(ProductSuccess(products: _allProducts, isOffline: false));
+       return;
+     }
+
+    if(favId.contains(productId)){ // ask for id
         favId.remove(productId); // if yes remove heart
       }else{
         favId.add(productId); // else add heart

@@ -19,6 +19,11 @@ class FavCubit extends Cubit<FavStates>{
   //get favourites
 
   Future<void> getFavourites() async {
+    final token = await PrefHelper.getToken();
+    if (token == null || token.isEmpty || token== "Guest") {
+      emit( FavGuest());
+      return;
+    }
     emit(FavLoading());
 
     try {
@@ -62,6 +67,12 @@ class FavCubit extends Cubit<FavStates>{
       emit(FavFailure(message: "failed, please try again"));
 
     }
+  }
+
+// reset data
+  void clearFavData()async {
+    await Hive.box<FavCubit>("favBox").clear(); // clear hive when user is guest
+    emit(FavInitial());
   }
 
 }

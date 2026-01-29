@@ -25,6 +25,10 @@ abstract class HomeState extends Equatable { // use equatable to stop unnecessar
       List<Object?> get props => [message];
    }
 
+   //guest
+   class HomeGuest extends HomeState{}
+   class ProductGuestError extends HomeState {}
+
 
    // add fav states
      class AddFavSuccess extends HomeState{

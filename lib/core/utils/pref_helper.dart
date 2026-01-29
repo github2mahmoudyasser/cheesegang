@@ -178,51 +178,90 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
                 final box = await _getBox(_userBoxName);
                 return box.get("profile_image_$email");
               }
+
+
+
+
+              // clear all data when log out
+              static Future<void> logout() async {
+                await removeToken();
+
+                final boxesToClear = [
+                  _productsBoxName,
+                  _toppingsBox,
+                  _cartBox,
+                  _orderHisBox,
+                  _userDataBox,
+                  _blackListBox,
+                  _favBox,
+                ];
+
+                for (var boxName in boxesToClear) {
+                  if (Hive.isBoxOpen(boxName)) {  // go to all boxes and clear it
+                    await Hive.box(boxName).clear();
+                  } else {
+                    var box = await Hive.openBox(boxName);
+                    await box.clear();
+                  }
+                }
+              }
+
+
             }
 
 
-            /*class PrefHelper {
-                static const String _boxName = "userBox";
-                 static const String _tokenKey  ="auth_token";
 
-                    static Box _getBox()=> Hive.box(_boxName);
-                  //getToken
-                 static String? getToken(){
-                  return _getBox().get(_tokenKey);
-                }
 
-                // saveToken
-             static  Future<void> saveToken(String token)async{
-                   await _getBox().put(_tokenKey, token);
-               }
 
-               // removeToken
-            static  Future<void> removeToken()async{
-                  await _getBox().delete(_tokenKey);
+
+
+
+
+ // old code shard pref
+/*
+            import 'package:shared_preferences/shared_preferences.dart';
+
+            class PrefHelper{
+              static const _tokenKey ="auth_token";
+              //save token
+              static Future<void> saveToken(String token)async{
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString(_tokenKey, token);
+
+              }
+              // get token
+              static Future<String?> getToken()async{
+                final prefs = await SharedPreferences.getInstance();
+                return prefs.getString(_tokenKey);
+
+              }
+              //remove token
+              static Future<void> removeToken()async{
+                final prefs = await SharedPreferences.getInstance();
+                prefs.remove(_tokenKey);
 
               }
 
-                // save user image
-                static Future<void> saveUserImage(String email, String path) async {
-                  await _getBox().put("profile_image_$email", path);
-                }
+              static Future<void> saveUserImage(String email, String path) async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString("profile_image_$email", path);
+              }
 
-                // get user image
-                static String? getUserImage(String email) {
-                  return _getBox().get("profile_image_$email");
-                }
+              static Future<String?> getUserImage(String email) async {
+                final prefs = await SharedPreferences.getInstance();
+                return prefs.getString("profile_image_$email");
+              }
 
-                // remove user image
-                static Future<void> removeUserImage(String email) async {
-                  await _getBox().delete("profile_image_$email");
-                }
-
+              static Future<void> removeUserImage(String email) async {
+                final prefs = await SharedPreferences.getInstance();
+                prefs.remove("profile_image_$email");
+              }
             }
 
-             */
 
 
 
+*/
 
 
 

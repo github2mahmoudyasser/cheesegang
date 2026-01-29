@@ -55,7 +55,7 @@ class _OrderHisViewState extends State<OrderHistoryView> {
   Widget _buildBody(BuildContext context, OrderState state) {
     final bool waitingServer = state is OrderLoading || state is OrderInitial;
     List<OrderData> orderData = [];
-    if (state is OrderSuccess) {
+    if (state is OrderSuccess) { // make sure get data if any thing happen
       orderData = state.orderHisModel?.order ??[] ; // get new data
     } else if (state is OrderLoading) {
      orderData = state.orderHisModel?.order ?? []; // show old data when loading

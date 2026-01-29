@@ -3,7 +3,10 @@
 
                import 'package:cheesegang/core/network/api_error.dart';
                  import 'package:dio/dio.dart';
-
+//S - Single Responsibility
+ //O - Open/Closed Principle
+ //Abstraction i do this: ApiExceptions.handleError
+ // trans Dio to object Api error
 
                   class ApiExceptions {
                     static ApiError handleError(DioException error){
@@ -48,7 +51,7 @@
 
                               //unknown error happened
                           case DioExceptionType.unknown:
-                            if(error.message!=null&& error.message!.contains("SocketException")){
+                            if(error.message!=null&& error.message!.contains("SocketException")){ // عشان ال dio يفهم
                               return ApiError(message: "No Internet connection");
                             }
                              return ApiError(message: "Unknown Error: ${error.error}");
