@@ -54,13 +54,13 @@
 <p align="center">
   <img src="screenShot/filtercategories.jpg" width="350">
   <br>
-  <i>FilterCategories - Interactive 3D Burgers & Categories</i>
+  <i>FilterCategories - Filter Categories</i>
 </p>
 
 <p align="center">
   <img src="screenShot/filtercategories2.jpg" width="350">
   <br>
-  <i>FilterCategories - Interactive 3D Burgers & Categories</i>
+  <i>FilterCategories - Filter Categories</i>
 </p>
 
 <p align="center">
