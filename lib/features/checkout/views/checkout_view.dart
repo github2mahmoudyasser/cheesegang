@@ -238,7 +238,6 @@ import '../../cart/views/logic/cart_state.dart';
                GestureDetector(
                  onTap: () {
                    Navigator.pop(context);
-                   context.read<RootCubit>().changeScreen(3);
                  },
                  child: Container(
                    width: 200,
@@ -247,7 +246,7 @@ import '../../cart/views/logic/cart_state.dart';
                      borderRadius: BorderRadius.circular(15),
                      color: AppColors.primary,
                    ),
-                   child: const Center(child: CustomText(text: "View History", color: Colors.white)),
+                   child: const Center(child: CustomText(text: "Done", color: Colors.white)),
                  ),
                )
              ],

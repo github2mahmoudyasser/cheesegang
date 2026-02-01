@@ -39,10 +39,10 @@ class CardItem extends StatelessWidget {
                   child: ClipRRect(
                 borderRadius: BorderRadiusGeometry.circular(15),
                 child: Skeleton.replace(
-                  width: 140,
+                  width: 180,
                     height: 115,
-                    child: CachedNetworkImage(imageUrl: image,width: 140,height:115,
-                      fit: BoxFit.cover,
+                    child: CachedNetworkImage(imageUrl: image,width: 150,height:115,
+                      fit: BoxFit.contain,
                       errorWidget: (context,url,error)=>Container(
                         color: Colors.grey.shade200,
                         child: const Icon(Icons.broken_image,color: Colors.grey,),

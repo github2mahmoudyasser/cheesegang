@@ -247,7 +247,7 @@ class _HomeViewState extends State<HomeView> {
                                            productPrice: product.price,)));
                                        },
                                        fav: (){
-                                         context.read<HomeCubit>().toggleFav(product.id);
+                                        context.read<HomeCubit>().toggleFav(product.id);
                                          context.read<HomeCubit>().addFavProducts(productId: product.id);
 
                                        },

@@ -60,7 +60,7 @@ class Root extends StatelessWidget {
             if (state is AddFavFailure) {
               ScaffoldMessenger.of(context).showSnackBar(customSnack("Failed, try again"));
             }
-            if (state is ProductGuestError) {
+            if (state is HomeGuest) {
               ScaffoldMessenger.of(context).showSnackBar(customSnack("Please login first to add favorites!"));
             }
 

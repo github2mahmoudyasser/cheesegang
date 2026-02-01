@@ -87,10 +87,10 @@ class HomeCubit extends Cubit<HomeState> {
 
 
 
-   // add Fav products
+  // add Fav products
   Future<void> addFavProducts({
     required int productId
-})async{
+  })async{
     try{
       final favModel = IsFav(
           productId: productId
@@ -111,24 +111,25 @@ class HomeCubit extends Cubit<HomeState> {
 
   }
 
-   void toggleFav(int productId)async{
-     final token = await PrefHelper.getToken();
+  void toggleFav(int productId)async{
+    final token = await PrefHelper.getToken();
 
-     if (token == null || token.isEmpty || token == "Guest") {
-       emit(ProductGuestError());
-       emit(ProductSuccess(products: _allProducts, isOffline: false));
-       return;
-     }
+    if (token == null || token.isEmpty || token == "Guest") {
+     emit(HomeGuest());
+      emit(ProductSuccess(products: _allProducts, isOffline: false));
+      return;
+    }
 
     if(favId.contains(productId)){ // ask for id
-        favId.remove(productId); // if yes remove heart
-      }else{
-        favId.add(productId); // else add heart
-      }
-      emit(ProductSuccess(products: _allProducts, isOffline: false)); // draw screen whith new data
+      favId.remove(productId); // if yes remove heart
+    }else{
+      favId.add(productId); // else add heart
+    }
+    emit(ProductSuccess(products: _allProducts, isOffline: false)); // draw screen whith new data
   }
-
 }
+
+
 
 
 

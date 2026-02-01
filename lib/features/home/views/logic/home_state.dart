@@ -27,7 +27,6 @@ abstract class HomeState extends Equatable { // use equatable to stop unnecessar
 
    //guest
    class HomeGuest extends HomeState{}
-   class ProductGuestError extends HomeState {}
 
 
    // add fav states
@@ -45,8 +44,3 @@ abstract class HomeState extends Equatable { // use equatable to stop unnecessar
       List<Object?> get props => [message];
      }
 
-     // toggle fav
-      class ToggleFav extends HomeState{
-       final int selectIndex;
-       ToggleFav({required this.selectIndex});
-      }
