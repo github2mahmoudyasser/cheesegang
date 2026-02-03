@@ -13,79 +13,57 @@ class DetailsRepo {
   final ApiService apiService;
   DetailsRepo(this.apiService);
 
-
-     //get toppings
-   Future<List<DetailsModel>> getToppings()async{
-     try{
-       final toppingsRequest = await apiService.get("/toppings");
-       if(toppingsRequest is ApiError){
-         throw toppingsRequest;
-       }
-        if(toppingsRequest is Map<String,dynamic>){
-           final msg = toppingsRequest["message"];
-           final code = toppingsRequest["code"];
-           if(code!=200&&code!=201){
-             throw ApiError(message: msg);
-           }
-           List<DetailsModel> toppings = (toppingsRequest["data"] as List)
-               .map((product) => DetailsModel.fromJson(product))
-               .toList();
-            
-              await PrefHelper.cashedToppings(toppings);
-              return toppings;
-
+// Dry (Don't repeat your self)
+  Future<List<DetailsModel>> getExtra(String endPoint)async{
+    try{
+      final request = await apiService.get(endPoint);
+      if(request is ApiError){
+        throw request;
+      }
+      if(request is Map<String,dynamic>){
+        final msg = request["message"];
+        final code = request["code"];
+        if(code!=200&&code!=201){
+          throw ApiError(message: msg);
         }
-       return[];
+        List<DetailsModel> extras = (request["data"] as List)
+            .map((product) => DetailsModel.fromJson(product))
+            .toList();
 
-     }on DioException catch(e) {
-       // get data from cached if lose internet
-       final  cashedToppings = await PrefHelper.getCachedToppings();
-       if(cashedToppings.isNotEmpty){
-         return cashedToppings;
-       }
-       throw ApiExceptions.handleError(e);
-     }catch(e) {
-       final cashedToppings = await PrefHelper.getCachedToppings();
-       if (cashedToppings.isNotEmpty) {
-         return cashedToppings;
-       }
-       throw ApiError(message: "Server error, please try again");
-     }
-
-
-   }
-
-   // side options
-  Future<List<DetailsModel>> getSideOptions()async{
-      try {
-        final optionsRequest = await apiService.get("/side-options");
-        if(optionsRequest is ApiError){
-          throw optionsRequest;
-        }
-        if(optionsRequest is Map<String,dynamic>){
-           final msg = optionsRequest["message"];
-           final code = optionsRequest["code"];
-
-           if(code!=200&&code!=201){
-             throw ApiError(message: msg);
-           }
-          List<DetailsModel> options = (optionsRequest["data"] as List)
-           .map((e)=>DetailsModel.fromJson(e)).toList();
-           return options;
-        }
-        return [];
-      }on DioException catch(e){
-        final cashedOptions = await PrefHelper.getCachedToppings();
-        if(cashedOptions.isNotEmpty){
-          return cashedOptions;
-        }
-         throw ApiExceptions.handleError(e);
-      }catch(e){
-        throw ApiError(message: "Server Error, please try again.");
-
+        await PrefHelper.cashedToppings(extras);
+        return extras;
 
       }
+      return[];
+
+    }on DioException catch(e) {
+      // get data from cached if lose internet
+      final  cashedToppings = await PrefHelper.getCachedToppings();
+      if(cashedToppings.isNotEmpty){
+        return cashedToppings;
+      }
+      throw ApiExceptions.handleError(e);
+    }catch(e) {
+      final cashedToppings = await PrefHelper.getCachedToppings();
+      if (cashedToppings.isNotEmpty) {
+        return cashedToppings;
+      }
+      throw ApiError(message: "Server error, please try again");
+    }
+
   }
+
+  //get toppings
+  Future<List<DetailsModel>> getToppings()async{
+    return getExtra("/toppings");
+  }
+
+  //get options
+  Future<List<DetailsModel>> getOptions()async{
+    return getExtra("/side-options");
+  }
+
+
 
   //Add to cart
   Future<void> addToCart(CartRequestModel cartData)async{

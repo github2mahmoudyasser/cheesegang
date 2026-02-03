@@ -27,7 +27,7 @@ part 'product_model.g.dart';
 @HiveField(5)
   final String price;
 
-      ProductModel({
+      ProductModel({   // Generative cons
         required this.id,
         required this.name,
         required this.desc,
@@ -35,7 +35,7 @@ part 'product_model.g.dart';
         required this.rate,
         required this.price
  });
-      factory ProductModel.fromJson(Map<String,dynamic>json){
+      factory ProductModel.fromJson(Map<String,dynamic>json){  //Factory Constructor
         String imageUrl = json["image"];
         if(imageUrl.startsWith("http://")){
        imageUrl = imageUrl.replaceFirst("http://", "https://");

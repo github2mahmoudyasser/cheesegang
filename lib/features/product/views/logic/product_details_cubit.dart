@@ -38,7 +38,7 @@ class ProductDetailsCubit  extends Cubit<ProductDetailsState>{
   Future<void> getOptions()async{
     emit(GetExtraLoading());
     try{
-      final sideOptionData = await detailsRepo.getSideOptions();
+      final sideOptionData = await detailsRepo.getOptions();
       options  =sideOptionData;
       emit(GetExtraSuccess(extra:options!));
 
